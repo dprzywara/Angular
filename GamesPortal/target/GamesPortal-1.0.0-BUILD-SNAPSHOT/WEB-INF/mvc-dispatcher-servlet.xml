@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+<!-- 	<mvc:resources mapping="/resources/**" location="/resources/theme/" /> -->
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- Baza danych -->
+	<import resource="classpath:config/hibernate.xml" />
+
+
+	<context:component-scan base-package="com.project.inz" />
+	<jpa:repositories base-package="com.project.inz.repository" />
+
+	<!-- <bean id="multipartResolver" -->
+	<!-- class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/> -->
+
+
+<!-- to nizej usunalem -->
+<!-- 	<bean class="org.springframework.context.support.ResourceBundleMessageSource" -->
+<!-- 		id="messageSource"> -->
+<!-- 		<property name="basename" value="messages" /> -->
+<!-- 	</bean> -->
+	
+<!-- 	<mvc:annotation-driven conversion-service="conversionService" /> -->
+	
+<!-- 	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" > -->
+<!--     <property name="converters"> -->
+<!--         <list> -->
+<!--             <bean id="RoleToUserRoleConverter" class="com.project.inz.configuration.RoleToUserRoleConverter"/> -->
+<!--         </list> -->
+<!--     </property> -->
+<!-- </bean> -->
+	
+	
+	
+	<!-- Wiring the bean -->
+<bean class="org.springframework.context.support.ConversionServiceFactoryBean" id="theConversionService">
+<property name="converters">
+  <list>
+    <bean class="com.project.inz.configuration.StringToCategoryConverter"></bean>
+  </list>
+</property>
+</bean>
+ 
+<!-- then register the theConversionService, in most 
+cases mvc:annotations are defined close to the top of he config file -->
+<mvc:annotation-driven conversion-service="theConversionService">
+</mvc:annotation-driven>
+	
+	
+	
+	  <mvc:annotation-driven conversion-service="conversionService" />
+
+  <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" >
+	    <property name="converters">
+	        <list>
+	            <bean class="com.project.inz.configuration.StringToCategoryConverter"/>
+	        </list>
+		</property>
+	</bean>
+	
+	
+	
+	<!-- Spring Internationalizations -->
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:messages" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<bean id="localeResolver"	class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="en" />
+	</bean>
+
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="language" />
+		</bean>
+	</mvc:interceptors>
+	
+	
+
+
+</beans>

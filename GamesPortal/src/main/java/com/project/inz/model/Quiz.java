@@ -48,14 +48,14 @@ public class Quiz implements Serializable {
 	private String name;
 	
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "categoryId")
+	@JoinColumn(name = "categoryId")//tu chyba one to many one po stronie kategprii
 	//@JsonBackReference
 	private Category category;
 	
-	@Column(name = "level", nullable = false)
+	@Column(name = "level")
 	private int level;
 	
-	@Column(name = "popularity", nullable = false)
+	@Column(name = "popularity")
 	private int popularity;
 	
 	@OneToMany(mappedBy="quiz",fetch=FetchType.EAGER)
@@ -74,10 +74,10 @@ public class Quiz implements Serializable {
 	private Set<ScoreCard> scores= new HashSet<ScoreCard>();
 	
 	
-	@Override
-	public String toString() {
-		return name;
-	}
+//	@Override
+//	public String toString() {
+//		return name;
+//	}
 	
 	
 }

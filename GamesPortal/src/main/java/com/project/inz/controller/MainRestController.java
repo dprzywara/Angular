@@ -1,31 +1,42 @@
 package com.project.inz.controller;
  
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.converter.ContentTypeResolver;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.inz.model.BookEntity;
 import com.project.inz.model.Category;
+import com.project.inz.model.Invitation;
+import com.project.inz.model.InvitationTo;
 import com.project.inz.model.Question;
 import com.project.inz.model.Quiz;
 import com.project.inz.model.User;
 import com.project.inz.service.CategoryService;
+import com.project.inz.service.InvitationService;
 import com.project.inz.service.QuestionService;
 import com.project.inz.service.QuizService;
 import com.project.inz.service.UserService;
+import com.project.inz.service.impl.LoginService;
 
  
 @RestController
@@ -41,9 +52,16 @@ public class MainRestController {
 
     @Autowired
     QuizService quizService;
+    
+    @Autowired
+    InvitationService invitationService;
 
 	@Autowired
 	QuestionService questionService;
+	
+	@Autowired
+	@Qualifier("sessionRegistry")
+	private SessionRegistry sessionRegistry;
  
     
     //-------------------Retrieve All Users--------------------------------------------------------
@@ -57,6 +75,42 @@ public class MainRestController {
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
  
+
+	// Get logged in users in json format for display using angularjs
+	@RequestMapping(value="/activeUsers/{username}", method=RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<List<User>>  getPrincipals(@PathVariable("username") String currentUser)  {		
+		System.out.println("poszlo zapytanie o userow z userem "+currentUser);
+		
+		List<Object> principals = sessionRegistry.getAllPrincipals();
+		List<String> usersNamesList = new ArrayList<String>();
+		List<User> userList	= new ArrayList<User>();
+		
+		for (Object principal: principals) {
+		    if (principal instanceof org.springframework.security.core.userdetails.User) {
+		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal).getUsername());
+		    }
+		}
+		for (String username : usersNamesList) {
+			if(!(username.equals(currentUser)))
+				userList.add(userService.findUserByLogin(username));
+		}
+		return new ResponseEntity<List<User>>(userList, HttpStatus.OK);		
+	}
+	
+	
+	@RequestMapping(value="/currentUser", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<User>  getUser()  {		
+		
+		System.out.println("rest do current usera z userem ");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	      String name =  auth.getName();	
+	      if(name==null){
+	    	  return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+	      }
+	      return new ResponseEntity<User>(userService.findUserByLogin(name), HttpStatus.OK);	
+	}
  
     
  
@@ -160,7 +214,6 @@ public List<Category> getAllCategories() {
 
 @RequestMapping(value = "/category", method = RequestMethod.POST)
 public void saveCategory(@RequestBody Category category) {
-	System.out.println("wchodzi tutaj!!!!!!!!!!!!!!!!!!!!!!!!!");
 	categoryService.saveCategory(category);
 }
 
@@ -189,14 +242,11 @@ public ResponseEntity<Category> updateCategory(@PathVariable("id") Integer id, @
 		System.out.println("Category with id " + id + " not found");
 		return new ResponseEntity<Category>(HttpStatus.NOT_FOUND);
 	}
-
-	//currentUser.setName(user.getName());
-	//currentUser.setAge(user.getAge());
-	//currentUser.setSalary(user.getSalary());
-	
 	categoryService.updateCategory(category);
 	return new ResponseEntity<Category>(curCategory, HttpStatus.OK);
 }
+
+
 
 //------------------- Delete Category --------------------------------------------------------
 
@@ -368,6 +418,43 @@ return new ResponseEntity<Quiz>(HttpStatus.NOT_FOUND);
 
 categoryService.deleteCategory(id);
 return new ResponseEntity<Quiz>(HttpStatus.NO_CONTENT);
+}
+
+
+@RequestMapping(value = "/invite", method = RequestMethod.POST)
+public void saveInvite(@RequestBody InvitationTo invitation) {
+	System.out.println("jeste w rest kontroler z zapisem "+ invitation.getInvitedId()+ " " + invitation.getInvitingUser());
+	Invitation inv = new Invitation();
+	inv.setStatus("invited");
+	inv.setInvited(userService.findById(invitation.getInvitedId()));
+	inv.setInviting(userService.findUserByLogin(invitation.getInvitingUser()));
+	invitationService.saveInvitation(inv);
+}
+
+//@RequestMapping(value = "/invite/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//@ResponseBody
+//public ResponseEntity<List<Invitation>> newInvite(@PathVariable String login){
+//	System.out.println("jeste w rest kontroler z loginem "+ login);
+//	if(login!="anonymousUser"){
+//		User user = userService.findUserByLogin(login);
+//	List<Invitation> invitations = invitationService.getAllUserInvitations(user.getId());
+//	System.out.println("Rozmiar zwracanej listy: "+invitations.size());
+//	return new ResponseEntity<List<Invitation>>(invitations, HttpStatus.OK);
+//	}
+//	return new ResponseEntity<List<Invitation>>(HttpStatus.NOT_FOUND);
+//	
+//}
+
+@RequestMapping(value = "/invite/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+@ResponseBody
+public ResponseEntity<String> newMassages(@PathVariable String login){
+	System.out.println(login);
+	User usr = userService.findUserByLogin(login);
+	if(usr.getUserInvited().size() != 0) {
+		return new ResponseEntity<String>(HttpStatus.OK);
+	} else {
+		return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+	}
 }
 
 }

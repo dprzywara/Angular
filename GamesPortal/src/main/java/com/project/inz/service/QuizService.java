@@ -17,8 +17,8 @@ public interface QuizService {
     void deleteQuiz(Integer id);
  
     List<Quiz> getAllQuizzes(); 
-	
-	List<Quiz> getMostPopularQuizes();
+    List<Quiz> getQuizzesFromCategory(String category);
+    List<Quiz> getMostPopularQuizes();
 
 	HashMap<String, Integer> getCategoryDistribution();
 	HashMap<String, Integer> getCategoryDistribution2();

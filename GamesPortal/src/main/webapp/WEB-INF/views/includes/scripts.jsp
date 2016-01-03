@@ -14,13 +14,10 @@
 <script type="text/javascript" src='<c:url value="/resources/js/lib/jquery-ui-1.10.4.custom.js"/>'></script>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/jquery.ui.datepicker.js"/>'></script>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/bootstrap.min.js"/>'></script>
-<script type="text/javascript" src='<c:url value="/resources/js/lib/angular.js"/>'></script>
-<script type="text/javascript" src='<c:url value="/resources/js/lib/angular.min.js"/>'></script>
-<%-- <script type="text/javascript" src='<c:url value="/resources/js/app.js"/>'></script> --%>
-<%-- <script type="text/javascript" src='<c:url value="/resources/js/js-movies.js"/>'></script> --%>
-<%-- <script type="text/javascript" src='<c:url value="/resources/js/js-movies.js"/>'></script> --%>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/jquery.min.js"/>'></script>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/jquery.js"/>'></script>
+<%-- <script type="text/javascript" src='<c:url value="/resources/js/lib/angular.js"/>'></script> --%>
+<%-- <script type="text/javascript" src='<c:url value="/resources/js/lib/angular.min.js"/>'></script> --%>
 
 <script type="text/javascript" src='<c:url value="/resources/js/lib/bootstrap.min.js"/>'></script>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/jQuery-2.1.3.min.js"/>'></script>
@@ -30,13 +27,13 @@
 <script type="text/javascript" src='<c:url value="/resources/js/lib/ie10-viewport-bug-workaround.js"/>'></script>
 <script type="text/javascript" src='<c:url value="/resources/js/lib/canvasjs.min.js"/>'></script>
 
-<script type="text/javascript">
-      $(function () {
-        $("#mytable").dataTable({
-            
-        });
-      });
-    </script>
+ <script type="text/javascript"> 
+  //    $(function () { 
+ //   $("#mytable").dataTable({ 
+ //           
+  //       });
+   //   });
+  </script>
 
 
 

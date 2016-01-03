@@ -1,33 +1,52 @@
 package com.project.inz.controller;
 
 
+import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.project.inz.model.Category;
+import com.project.inz.model.Invitation;
+import com.project.inz.model.MyForm;
 import com.project.inz.model.Question;
 import com.project.inz.model.Quiz;
 import com.project.inz.model.ScoreCard;
 import com.project.inz.model.User;
+import com.project.inz.model.UserRole;
 import com.project.inz.service.CategoryService;
+import com.project.inz.service.InvitationService;
 import com.project.inz.service.QuestionService;
 import com.project.inz.service.QuizService;
 import com.project.inz.service.RoleService;
@@ -45,7 +64,7 @@ public class UserController {
 	 QuestionService questionService;
 	
 	@Autowired
-	CategoryService categoryservice;
+	CategoryService categoryService;
 	
 	@Autowired
 	UserService userService;
@@ -59,6 +78,19 @@ public class UserController {
 	@Autowired
 	QuizService quizService;
 	
+	@Autowired
+    InvitationService invitationService;
+	
+	@Autowired
+	@Qualifier("sessionRegistry")
+	private SessionRegistry sessionRegistry;
+	
+	
+	
+	
+	
+	
+	
 //	@RequestMapping("/home")
 //	public void home(Model model) {
 //		Authentication auth = SecurityContextHolder.getContext()
@@ -70,6 +102,20 @@ public class UserController {
 //		}
 //	}
 	
+	@RequestMapping(value="/test", method = RequestMethod.GET)
+	public String  teest(Map<String, Object> parameters) {
+		List<User> listaKierowcow = userService.findAllUsers();
+		parameters.put("taxiList", listaKierowcow);
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		//if (auth != null) {
+			//String login = auth.getName();
+			parameters.put("userLogin", "user");
+			System.out.println("wchodzi@@@@@@@@@@@@@@@@@@@@@@@");
+			//model.addAttribute("userRole", auth.getAuthorities());
+		//}
+		return "/user/test";
+	}
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String Home( Model model) {
@@ -87,6 +133,10 @@ public class UserController {
 		List<ScoreCard> attemptedQuizzes = scoreService.updateHighestScore(user.getCards());
 		HashMap<String, Integer> categoryDistribution = scoreService.getCategoryCountForPlayedQuizzes(user.getCards());
 
+		List<User> listaKierowcow = userService.findAllUsers();
+		model.addAttribute("taxiList", listaKierowcow);
+		
+		
 		List<Quiz> popularQuizzes = quizService.getMostPopularQuizes();
 		model.addAttribute("username", username);
 		model.addAttribute("scoreCards", user.getCards());
@@ -106,6 +156,7 @@ public class UserController {
 	}
 	
 	
+	
 	@RequestMapping(value = "/chooseQuiz", method = RequestMethod.GET)
 	public String searchQuiz(Locale locale, Model model,HttpServletRequest request) {
 		
@@ -123,8 +174,8 @@ public class UserController {
 	}
 	
 	
-	@RequestMapping(value = "/quiz/play/{quizId}", method = RequestMethod.GET)
-	public String attempQuiz(@PathVariable("quizId") int quizId,
+	@RequestMapping(value = "/quiz/play/{roomId}/{quizId}", method = RequestMethod.GET)
+	public String attempQuiz(@PathVariable("quizId") int quizId,@PathVariable("roomId") int room,
 			HttpServletRequest request, Model model) {
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
@@ -134,25 +185,33 @@ public class UserController {
 			return "redirect:/";
 		}
 		Quiz attemptingQuiz = quizService.getQuiz(quizId);
+		
+		System.out.println("quiz wyslany do attempt "+attemptingQuiz.getName());
 		model.addAttribute("username", username);
 		model.addAttribute("quiz", attemptingQuiz);
+		model.addAttribute("email", user.getEmail());
+		model.addAttribute("room", room);
 		return "/user/quizAttempt";
 	}
 	
 	
 	
 	@RequestMapping(value = "/quiz/play", method = RequestMethod.POST)
-	public String attempQuiz(@RequestParam("count") Integer currentCount,
+	public String attempQuiz(@RequestParam("room") int room,@RequestParam("count") Integer currentCount,
 			@RequestParam("quizId") Integer quizId, HttpServletRequest request,
 			Model model) {
+		
+		System.out.println("przychodzi quizId "+quizId + " i count "+ currentCount);
 		
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String username = auth.getName();
+		
 		User user = userService.findUserByLogin(username);
 		if (user == null) {
 			return "redirect:/";
 		}
+		
 		if (scoreService.checkIfUserHasPlayedQuiz(user, quizId)) {
 			return "duplicateAttempt";
 		}
@@ -161,10 +220,12 @@ public class UserController {
 		request.getSession().setAttribute("quizBeingAnswered", quizToPlay);
 		Set<Question> questions = quizToPlay.getQuestions();
 		List<Question> questionsToAnswer = new ArrayList<Question>(questions);
-//		for (Iterator<Questions> it = questions.iterator(); it.hasNext();) {
+//		for (Iterator<Question> it = questions.iterator(); it.hasNext();) {
 //			Question currentQuestion = it.next();
-//			questionsToAttempt.add(currentQuestion);
+//			questionsToAnswer.add(currentQuestion);
 //		}
+		
+		
 		request.getSession().setAttribute("questionsBeingAnswered",
 				questionsToAnswer);
 		// get the current question object and send it to the jsp
@@ -178,6 +239,8 @@ public class UserController {
 		} else {
 			model.addAttribute("isLastQuestion", 0);
 		}
+		model.addAttribute("room", room);
+		model.addAttribute("email", user.getEmail());
 		return "/user/question";
 
 	}
@@ -190,7 +253,7 @@ public class UserController {
 	@RequestMapping(value = "/quiz/postAnswer", method = RequestMethod.POST)
 	public String postQuestion(@ModelAttribute("question") Question question,
 			@RequestParam("isLastQuestion") Integer isLastQuestion,
-			@RequestParam("count") Integer currentCount,
+			@RequestParam("count") Integer currentCount,@RequestParam("room") Integer room,
 			HttpServletRequest request, Model model) {
 		// add to session and redirect to next question view
 		@SuppressWarnings("unchecked")
@@ -235,6 +298,9 @@ public class UserController {
 			} else {
 				model.addAttribute("isLastQuestion", 0);
 			}
+			
+			model.addAttribute("email", user.getEmail());
+			model.addAttribute("room", room);
 			return "/user/question";
 
 		} else {
@@ -272,23 +338,32 @@ public class UserController {
 	
 	
 
-	@RequestMapping(value = "/selectUser/{way}", method = RequestMethod.GET)
-	public String selectUser(@PathVariable("way")  String way, Map<String, Object> parameters) {
+	@RequestMapping(value = "/selectUser/{quiz}", method = RequestMethod.GET)
+	public String selectUser(@PathVariable("quiz")  String quiz, Map<String, Object> map) {
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
-		
-		if (auth != null) {
-			String username = auth.getName();
-			User user = userService.findUserByLogin(username);
-			if(way.equals("friends")){
-				//parameters.put("users", user.getFriends());
-				
-			}
-			else{
-				parameters.put("users", userService.findAllUsers());
-			}
+		if (auth == null) {
+			return "redirect:/";
 		}
-		parameters.put("User", new User());  
+			String currentuser = auth.getName();
+		
+		List<Object> principals = sessionRegistry.getAllPrincipals();
+		List<String> usersNamesList = new ArrayList<String>();
+		List<User> userList	= new ArrayList<User>();
+		
+		for (Object principal: principals) {
+		    if (principal instanceof org.springframework.security.core.userdetails.User) {
+		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal).getUsername());
+		    }
+		}
+		for (String username : usersNamesList) {
+			//if(!(username.equals(currentUser)))
+				userList.add(userService.findUserByLogin(username));
+		}
+		map.put("users", userList);
+		map.put("quizName", quiz);
+		map.put("username", currentuser);
+		map.put("User", new User());  
 		
         return "/user/selectUser";
 		
@@ -298,22 +373,103 @@ public class UserController {
 	
 	
 	
-	@RequestMapping(value="/select", method = RequestMethod.GET)  
-    private String optionsTag(Map<String, Object> map) {  
-          
-        Map< String, String > phones = new HashMap<String, String>();  
-        phones.put("samsung", "SAMSUNG");  
-        phones.put("nokia", "NOKIA");  
-        phones.put("iphone", "IPHONE");  
-        phones.put("bberry", "BLACKBERRY");  
-        phones.put("htc", "HTC");  
-          
-		map.put("phoneList", userService.getAllUsernames());
-		map.put("user", new User());
+	@RequestMapping(value="/selectCategory", method = RequestMethod.GET)  
+    private String optionsTag(Map<String, Object> map) {   
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		if (auth == null) {
+			return "redirect:/";
+		}
+			String currentuser = auth.getName();
 		
-		return "/user/selectUser";
+		map.put("categoryList", categoryService.findAllCategories());
+		List<Object> principals = sessionRegistry.getAllPrincipals();
+		List<String> usersNamesList = new ArrayList<String>();
+		List<User> userList	= new ArrayList<User>();
+		
+		for (Object principal: principals) {
+		    if (principal instanceof org.springframework.security.core.userdetails.User) {
+		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal).getUsername());
+		    }
+		}
+		for (String username : usersNamesList) {
+			//if(!(username.equals(currentUser)))
+				userList.add(userService.findUserByLogin(username));
+		}
+		map.put("users", userList);
+		map.put("category", new Category());
+		map.put("username", currentuser);
+		return "/user/selectCategory";
     }  
 	
+	@RequestMapping(value = { "/selectCategory" }, method = RequestMethod.POST)
+	public String selectCategory(@Valid Category category, BindingResult result,
+			ModelMap model) {
+
+		if (result.hasErrors()) {
+			return "/user/selectCategory";
+		}
+		String name = category.getName();
+		int id =category.getId();
+
+		return "redirect:/user/selectQuiz/"+id;
+	}
+	
+	
+	@RequestMapping(value="/selectQuiz/{category}", method = RequestMethod.GET)  
+    private String selectQuiz(@PathVariable("category")  Integer id,Map<String, Object> map) {   
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		if (auth == null) {
+			return "redirect:/";
+		}
+			String currentuser = auth.getName();
+//		map.put("quizList", categoryService.findAllCategories());
+			String category = categoryService.findById(id).getName();
+		map.put("quizList", quizService.getQuizzesFromCategory(category));
+	
+		map.put("quiz", new Quiz());
+		map.put("myform", new MyForm());
+//		map.put("category", new Category());
+		map.put("username", currentuser);
+		return "/user/selectQuiz";
+    } 
+	
+	@RequestMapping(value = { "/selectQuiz/" }, method = RequestMethod.POST)
+//	@RequestMapping(value = { "/selectQuiz/{category}" }, method = RequestMethod.POST)
+	public String selectQuiz(@ModelAttribute("myform") MyForm myform,BindingResult result,Model model ) {	
+	//			public String selectQuiz(@Valid Quiz quiz, ,
+			
+
+		Integer quizId= myform.getQuizId();
+		
+		if (result.hasErrors()) {
+			System.out.println("blad post ");
+			
+			
+//			for (Object object : result.getAllErrors()) {
+//				
+//				System.out.println("error ; ");
+//			    if(object instanceof FieldError) {
+//			        FieldError fieldError = (FieldError) object;
+//
+//			        System.out.println(fieldError.getCode() +" "+fieldError.getField());
+//			    }
+//
+//			    if(object instanceof ObjectError) {
+//			        ObjectError objectError = (ObjectError) object;
+//
+//			        System.out.println(objectError.getCode());
+//			    }
+//			}
+//			
+//			
+			return "/user/selectQuiz";
+		}
+		//String name = quiz.getName();
+//System.out.println("post z nazwa quizu "+name);
+		return "redirect:/user/selectUser/"+quizId;
+	}
 	
 	@RequestMapping(value="/question", method = RequestMethod.GET)  
     private String quiz(Map<String, Object> map) {  
@@ -321,6 +477,61 @@ public class UserController {
 		
 		return "/test/question";
     }  
+	@RequestMapping(value="/messages/{id}", method = RequestMethod.GET)  
+	private String chat(@PathVariable("id")  Integer id,Map<String, Object> map) {  
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String login=null;
+		if (auth != null) {
+			 login = auth.getName();
+			map.put("username", login);
+		}
+		
+		User current= userService.findUserByLogin(login);
+		
+		
+		map.put("email", current.getEmail());
+		
+		return "/user/privateChat";
+	}  
+	
+	
+	@RequestMapping(value="/messages", method = RequestMethod.GET)  
+	private String selectuser(Map<String, Object> map) {  
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String login=null;
+		if (auth != null) {
+			 login = auth.getName();
+			map.put("username", login);
+		}
+		
+		User current= userService.findUserByLogin(login);
+		
+		List<Object> principals = sessionRegistry.getAllPrincipals();
+		List<String> usersNamesList = new ArrayList<String>();
+		List<User> userList	= new ArrayList<User>();
+		
+		for (Object principal: principals) {
+		    if (principal instanceof org.springframework.security.core.userdetails.User) {
+		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal).getUsername());
+		    }
+		}
+		for (String username : usersNamesList) {
+			//if(!(username.equals(currentUser)))
+				userList.add(userService.findUserByLogin(username));
+		}
+		map.put("users", userList);
+		map.put("email", current.getEmail());
+		
+		return "/user/privateChatSelect";
+	}  
+//	@RequestMapping(value="/test", method = RequestMethod.GET)  
+//	private String test(Map<String, Object> map) {  
+//		
+//		
+//		return "/user/test";
+//	}  
 	        
 	
 
@@ -333,5 +544,78 @@ public class UserController {
 		 parameters.put("questions", list);
 	        return "/user/game";
 	    }
-	
+	 
+	 
+		@RequestMapping(value = { "/edit-question-{questionId}" }, method = RequestMethod.POST)
+		public String updateQuestion(@Valid Question question, BindingResult result,
+				ModelMap model, @PathVariable String questionId) {
+
+			if (result.hasErrors()) {
+				return "/admin/questionForm";
+			}
+
+			questionService.updateQuestion(question);
+
+			model.addAttribute("success", "Question " + question.getId() +  " updated successfully");
+			return "redirect:/admin/questions";
+		}
+		
+//		@RequestMapping(value = { "/select/{invitingUser}/{invitedId}" }, method = RequestMethod.POST)
+		@RequestMapping(value = { "/select/{invitedId}/{quizId}" }, method = RequestMethod.POST)
+		public String sendInvite(@PathVariable Integer quizId, @PathVariable Integer invitedId) {
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			String login =null;
+			if (auth != null) {
+				 login= auth.getName();
+			}
+			Invitation inv = new Invitation();
+			inv.setStatus("invited");
+			inv.setInvited(userService.findById(invitedId));
+			inv.setInviting(userService.findUserByLogin(login)); // trzeba dodac quiz jeszcze do invitation
+			inv.setQuizId(quizService.findById(quizId));
+			invitationService.saveInvitation(inv);
+			
+			
+			return "redirect:/user/quiz/play/"+inv.getId()+"/"+quizId;
+		}
+		
+		@RequestMapping(value = "/invitations", method = RequestMethod.GET)
+		public String invitations(Model model) {
+			List<User> listaKierowcow = userService.findAllUsers();
+			model.addAttribute("taxiList", listaKierowcow);
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			
+			String login = new String();
+			if (auth != null) {
+				login = auth.getName();
+				model.addAttribute("userLogin", login);
+				model.addAttribute("userRole", auth.getAuthorities());
+			}
+
+			User usr = userService.findUserByLogin(login);
+			Set<Invitation> listaZlecen = usr.getUserInvited();
+			model.addAttribute("invitations", listaZlecen);
+			
+			return "/user/invitations";
+		}
+		
+		
+		 @RequestMapping(value = "/invitation/reject/{id}", method = RequestMethod.GET)
+		    public String game(@PathVariable("id")  Integer id, Map<String, Object> parameters) {
+		     
+			 //wyslij powiadomienie 
+			 invitationService.deleteInvitation(id);
+			 return "redirect:/user/invitations";
+		    }
+		 @RequestMapping(value = "/invitation/accept/{room}/{id}", method = RequestMethod.GET)
+		 public String gameAccept(@PathVariable("id")  Integer id,@PathVariable("room")  Integer room, Map<String, Object> parameters) {
+			 
+			 //wyslij powiadomienie 
+			// invitationService.deleteInvitation(id);
+			 return "redirect:/user/quiz/play/"+room+"/"+id;
+		 }
+		
+		
 }

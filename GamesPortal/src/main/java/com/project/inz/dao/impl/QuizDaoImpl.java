@@ -20,8 +20,10 @@ public class QuizDaoImpl extends AbstractDao<Integer, Quiz> implements QuizDao {
 
 	@SuppressWarnings("unchecked")
 	public List<Quiz> getQuizzesFromCategory(String category) {
-		Criteria criteria = createCriteria();
-		criteria.add(Restrictions.eq("category", category));
+		Criteria criteria = createCriteria(Quiz.class,"owner");
+		criteria.createAlias("owner.category", "cat");
+		criteria.add(Restrictions.eq("cat.name", category));
+		//criteria.add(Restrictions.eq("category", category));
 		return (List<Quiz>) criteria.list();
 	}
 

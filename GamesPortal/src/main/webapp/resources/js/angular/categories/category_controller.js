@@ -1,9 +1,11 @@
 'use strict';
 
-App.controller('CategoryController', ['$scope', 'CategoryService', function($scope, CategoryService) {
+App.controller('CategoryController', ['$scope', 'CategoryService', function($scope, CategoryService,datatables, Flash,$modal) {
           var self = this;
           self.category={id:null,name:''};
           self.categories=[];
+         // $scope.categories = [];
+          
           
           self.fetchAllCategories = function(){
               CategoryService.fetchAllCategories()
@@ -39,12 +41,35 @@ App.controller('CategoryController', ['$scope', 'CategoryService', function($sco
 
          self.deleteCategory = function(id){
               CategoryService.deleteCategory(id)
-		              .then(
-				              self.fetchAllCategories, 
+		              .then(function () {
+		            	  
+				              self.fetchAllCategories;
+				              self.remove(id);
+				              //removeBookById(id);
+			                 // Flash.create('success', 'Kategoria została usunięta.', 'custom-class');
+			                  },
 				              function(errResponse){
-					               console.error('Error while deleting User.');
-				              }	
-                  );
+					            	   console.error('Error while deleting Category.');
+					                  // Flash.create('danger', 'Wyjątek usuwanie', 'custom-class');
+					               });
+				              
+				              
+          		};
+          		
+//          	  var removeBookById = function (categoryId) {
+//                  for (var i = 0; i < $scope.categories.length; i = i + 1) {
+//                      if ($scope.categories[i].id === categoryId) {
+//                          $scope.categories.splice(i, 1);
+//                          break;
+//                      }
+//                  }
+//              };
+          
+          $scope.deleteBook = function (bookId) {
+              bookService.deleteBook(bookId).then(function () {
+                  removeBookById(bookId);
+                  Flash.create('success', 'Książka została usunięta.', 'custom-class');
+              });
           };
 
           self.fetchAllCategories();

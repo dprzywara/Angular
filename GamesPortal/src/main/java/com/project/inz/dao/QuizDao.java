@@ -15,6 +15,7 @@ public interface QuizDao {
     List<Quiz> getQuizzesFromLevel(Integer level);
     void updateQuiz(Quiz quiz);
     List<Quiz> getAllQuizzes();
+    List<Quiz> getQuizzesFromCategory(String category);
     List<Quiz> getPopularityList();
     void incresePopularity(Quiz quiz);
     

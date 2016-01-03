@@ -142,4 +142,9 @@ public class QuizServiceImpl implements QuizService {
 	
 	*/
 
+	@Override
+	public List<Quiz> getQuizzesFromCategory(String category) {
+		return quizDao.getQuizzesFromCategory(category);
+	}
+
 }

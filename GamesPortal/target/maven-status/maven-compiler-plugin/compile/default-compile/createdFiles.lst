@@ -4,6 +4,7 @@ com\project\inz\service\impl\BookServiceImpl.class
 com\project\inz\dao\AbstractDao.class
 com\project\inz\model\Response.class
 com\project\inz\model\UserRole.class
+com\project\inz\dao\AuthorDao.class
 com\project\inz\service\QuizService.class
 com\project\inz\model\CommentsDTO.class
 com\project\inz\service\impl\ScoreCardServiceImpl.class
@@ -12,13 +13,12 @@ com\project\inz\dao\ScoreCardDao.class
 com\project\inz\model\ScoreCard.class
 com\project\inz\configuration\MyAuthenticationSuccessHandler.class
 com\project\inz\dao\impl\CategoryDaoImpl.class
-com\project\inz\repository\AuthorRepository.class
-com\project\inz\repository\BookRepository.class
 com\project\inz\model\Question.class
 com\project\inz\dao\UserDao.class
 com\project\inz\service\AuthorService.class
 com\project\inz\controller\AdminController$2.class
 com\project\inz\controller\AdminController.class
+com\project\inz\dao\impl\BookDaoImpl.class
 com\project\inz\model\Comment.class
 com\project\inz\service\impl\LoginService.class
 com\project\inz\controller\BookController.class
@@ -35,6 +35,7 @@ com\project\inz\controller\AdminController$1.class
 com\project\inz\dao\UserRoleDao.class
 com\project\inz\model\Quiz.class
 com\project\inz\model\QuizScore.class
+com\project\inz\dao\impl\AuthorDaoImpl.class
 com\project\inz\service\impl\QuizServiceImpl.class
 com\project\inz\configuration\RoleToUserRoleConverter.class
 com\project\inz\service\impl\CategoryServiceImpl.class
@@ -42,6 +43,7 @@ com\project\inz\model\BookEntity.class
 com\project\inz\service\impl\UserServiceImpl.class
 com\project\inz\controller\HomeController.class
 com\project\inz\model\User.class
+com\project\inz\dao\BookDao.class
 com\project\inz\service\BookService.class
 com\project\inz\service\CategoryService.class
 com\project\inz\dao\impl\UserDaoImpl.class
@@ -50,6 +52,7 @@ com\project\inz\dao\impl\ScoreCardDaoImpl.class
 com\project\inz\service\impl\AuthorServiceImpl.class
 com\project\inz\configuration\DateTag.class
 com\project\inz\service\impl\RoleServiceImpl.class
+com\project\inz\controller\AdminController$3.class
 com\project\inz\dao\CategoryDao.class
 com\project\inz\service\ScoreCardService.class
 com\project\inz\model\Message.class

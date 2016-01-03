@@ -6,15 +6,20 @@
 	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 
+
+<!-- 	<http pattern="/main/client/registration**" security="none"/>     -->
+    <http pattern="/rest/**" security="none"/>
+    <http pattern="/resources/**" security="none"/>
 	<!-- enable use-expressions -->
 	<http auto-config="true" use-expressions="true">
 <!-- 		<intercept-url pattern="/admin**" access="hasRole('ROLE_ADMIN')" /> -->
 <!-- 		<intercept-url pattern="/user**" access="hasRole('ROLE_USER')" /> -->
 <!-- 		<intercept-url pattern="/**" access="isAuthenticated()" /> -->
-		<intercept-url pattern="/**" access="permitAll" />
+<!-- 		<intercept-url pattern="/**" access="permitAll" /> -->
+<!-- 		<intercept-url pattern="/rest/**" access="permitAll" /> -->
 
 		<!-- access denied page -->
-		<access-denied-handler error-page="/403" />
+<!-- 		<access-denied-handler error-page="/403" /> -->
 		<form-login login-page="/login" 
 		authentication-failure-url="/login?error"
 		authentication-success-handler-ref="MyAuthenticationSuccessHandler"

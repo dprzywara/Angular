@@ -32,12 +32,24 @@
     </style>
 
 <!--  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script> -->
+<!--  <script src="/resources/js/angular/bower_components/angular-datatables/dist/angular-datatables.js"></script> -->
+<script type="text/javascript" src='<c:url value="/resources/js/lib/jquery.min.js"/>'></script>
+
+ <script src="<c:url value='/resources/js/angular/bower_components/angular-datatables/dist/angular-datatables.js' />"></script>
+ <script src="<c:url value='/resources/js/angular/bower_components/angular-datatables/dist/jquery.dataTables.min.js' />"></script>
+ <script type="text/javascript" src='<c:url value="/resources/js/lib/angular.min.js"/>'></script>
+ <script src="<c:url value='/resources/js/angular/bower_components/angular-datatables/dist/angular-datatables.min.js' />"></script>
+<%--  <script src="<c:url value='/resources/js/angular/bower_components/angular-flash-alert/dist/angular-flash.js' />"></script> --%>
+ <script src="<c:url value='/resources/js/angular/bower_components/angular-flash-alert/dist/angular-flash.min.js' />"></script>
+ <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
  
+ <link rel="stylesheet" href='<c:url value="/resources/js/angular/bower_components/angular-flash-alert/dist/angular-flash.min.css'"/>'>
 </head>
 <body role="document"  >
 		<%@include file="../includes/header2.jsp"%>
 <!-- <tiles:insertAttribute name="msg"/> -->
 
+<div flash-message="5000" ></div> 
 
 	<div class="admin-photo-background">
 
@@ -104,8 +116,9 @@
 					
 					
 		<div  ng-app="myApp"  ng-controller="CategoryController as ctrl">			
-					  <table datatable="ng" class="table table-striped table-bordered table-condensed text-center" aria-describedby="mytable_info">
+					  <table  datatable="ng"  class="table table-striped table-bordered table-condensed text-center" aria-describedby="mytable_info">
 <!-- 						// id="mytable" -->
+<!-- //datatable="ng" -->
                       <thead>
                          <tr class="info">
 									<th width="30%"><spring:message code="category.name" /></th>
@@ -116,15 +129,14 @@
                           <tr ng-repeat="c in ctrl.categories">
                               <td><span ng-bind="c.name"></span></td>
                               <td>
-                              <button type="button" ng-click="ctrl.edit(c.id)" class="btn btn-success custom-width">Edit</button>  <button type="button" ng-click="ctrl.remove(c.id)" class="btn btn-danger custom-width">Remove</button>
+                              <button type="button" ng-click="ctrl.edit(c.id)" class="btn btn-success custom-width">Edit</button>  <button type="button" ng-click="ctrl.deleteCategory(c.id)" class="btn btn-danger custom-width">Remove</button>
                               </td>
                           </tr>
                       </tbody>
                   </table>
                       </div>
 					
-					
-					
+						
 					
 					
 				</div>
@@ -135,7 +147,7 @@
 			</div>
 			
 <!-- 		</div> -->
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+<!-- 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script> -->
 		<script src="<c:url value='/resources/js/angular/app.js' />"></script>
       <script src="<c:url value='/resources/js/angular/categories/category_service.js' />"></script>
       <script src="<c:url value='/resources/js/angular/categories/category_controller.js' />"></script>
@@ -147,6 +159,7 @@
         });
       });
     </script>
+    
 		
 </body>
 </html>

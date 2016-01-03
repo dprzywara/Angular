@@ -14,9 +14,9 @@
 					<ul class="nav nav-sidebar">
 						<li><a href="${contextPath}/user/chooseQuiz"><span
 							class="glyphicon glyphicon-search"></span><spring:message code="sidebar.playQuiz" /></a></li>
-							<li><a href="${contextPath}/user/selectUser/all"><span
+							<li><a href="${contextPath}/user/selectCategory"><span
 							class="glyphicon glyphicon-play-circle"></span><spring:message code="sidebar.playQuizDirect" /></a></li>
-						<li><a href="${contextPath}/messages"><span
+						<li><a href="${contextPath}/user/messages"><span
 							class="glyphicon glyphicon-envelope"></span><spring:message code="sidebar.messages" /></a></li>
 						<li><a href="${contextPath}/editaccount"><span class="glyphicon glyphicon-user"></span><spring:message code="sidebar.editAccount" /></a></li>
 						<li><a href="${contextPath}/editpassword"><span

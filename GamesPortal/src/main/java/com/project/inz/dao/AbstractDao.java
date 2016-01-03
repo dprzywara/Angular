@@ -35,6 +35,9 @@ public abstract class AbstractDao<PK extends Serializable, T>{
 	protected Criteria createCriteria() {
 		return getSession().createCriteria(persistentClass);
 	}
+	protected Criteria createCriteria(Class<T> c,String alias) {
+		return getSession().createCriteria(c, alias);
+	}
 	
 
 	protected Query createQuery(String query) {

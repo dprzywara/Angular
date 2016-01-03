@@ -27,24 +27,24 @@
             
           </ul>
         </li>
-       <li><a id="messages" href="/kurierzy/main/admin/orders" title="Nowe Zlecenia"><span
+       <li><a id="messages" href="${contextPath}/user/invitations" title="Zaproszenia"><span
 								class="glyphicon glyphicon-inbox" aria-hidden="true"></span></a>
 						</li>
-						<li><a href="/kurierzy/main/admin/mails" title="Wiadomości"><span
+						<li><a href="${currentUrl}/mails" title="Wiadomości"><span
 								class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
 						</li>
-						<li><a href="/kurierzy/main/admin/rides_history" title="Historia kursów"><span
-								class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
-						</li>
-						<li><a href="/kurierzy/main/admin/price_list" title="Cennik"><span
-								class="glyphicon glyphicon-usd" aria-hidden="true"></span></a>
-						</li>
-						<li><a href="/kurierzy/main/admin/users" title="Zarządzanie użytkownikami"><span
-								class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
-						</li>
-						<li><a href="/kurierzy/main/admin/working_time" title="Czas pracy"><span
-								class="glyphicon glyphicon-time" aria-hidden="true"></span></a>
-						</li>
+<!-- 						<li><a href="/kurierzy/main/admin/rides_history" title="Historia kursów"><span -->
+<!-- 								class="glyphicon glyphicon-list" aria-hidden="true"></span></a> -->
+<!-- 						</li> -->
+<!-- 						<li><a href="/kurierzy/main/admin/price_list" title="Cennik"><span -->
+<!-- 								class="glyphicon glyphicon-usd" aria-hidden="true"></span></a> -->
+<!-- 						</li> -->
+<!-- 						<li><a href="/kurierzy/main/admin/users" title="Zarządzanie użytkownikami"><span -->
+<!-- 								class="glyphicon glyphicon-user" aria-hidden="true"></span></a> -->
+<!-- 						</li> -->
+<!-- 						<li><a href="/kurierzy/main/admin/working_time" title="Czas pracy"><span -->
+<!-- 								class="glyphicon glyphicon-time" aria-hidden="true"></span></a> -->
+<!-- 						</li> -->
 						
 						
 					</ul>

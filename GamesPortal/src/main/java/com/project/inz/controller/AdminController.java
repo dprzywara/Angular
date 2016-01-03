@@ -2,6 +2,7 @@ package com.project.inz.controller;
 
 import java.beans.PropertyEditorSupport;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,8 +137,8 @@ public class AdminController {
 ///////////////////////	users//////////////////////////////////////////////
 		@RequestMapping(value ="/users")
 		public String userList(Map<String, Object> map, Principal principal) {
-
-			map.put("users", userService.findAllUsers());
+			Set<User> users = new HashSet<User>(userService.findAllUsers());
+			map.put("users", users);
 			
 			if(principal != null){
 				String name = principal.getName(); //get logged in username
@@ -398,6 +399,8 @@ public class AdminController {
 			model.addAttribute("success", "Question " + question.getId() +  " updated successfully");
 			return "redirect:/admin/questions";
 		}
+		
+		
 		
 			
 

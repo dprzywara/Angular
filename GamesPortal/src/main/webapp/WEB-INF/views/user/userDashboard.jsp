@@ -12,16 +12,16 @@
 <!-- <title>QuizMe Dashboard</title> -->
 <!-- <meta charset="UTF-8"> -->
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-<!-- <!-- Optional theme --> -->
+<!-- <!-- Optional theme --> 
 <!-- <script -->
 <!-- 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
 <!-- <link rel="stylesheet" -->
 <!-- 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"> -->
 
-<!-- <!-- Bootstrap core CSS --> -->
+<!-- <!-- Bootstrap core CSS --> 
 <!-- <link href="../resources/css/bootstrap.min.css" rel="stylesheet"> -->
 
-<!-- <!-- Custom styles for this template --> -->
+<!-- <!-- Custom styles for this template --> 
 <!-- <link href="../resources/css/dashboard.css" rel="stylesheet"> -->
 <!-- <script type="text/javascript" src="../resources/js/lib/canvasjs.min.js"></script> -->
 <%-- <link rel="stylesheet" href='<c:url value="/resources/css/bootstrap-theme.min.css"/>'> --%>
@@ -63,10 +63,14 @@
 	}
 </script>
 
+
 </head>
 
 	<body role="document">
 		<%@include file="../includes/header2.jsp"%>
+
+
+
 	<div class=" client-photo-background">
 
 	<div class="container-fluid">
@@ -153,7 +157,10 @@
 		</div>
 	</div>
 </div>
-
+<!-- JQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<!-- Rest-client -->
+		<script src="<c:url value="/resources/js/rest-client.js" />"></script>
 
 <!-- 	<script src="../resources/js/lib/bootstrap.min.js"></script> -->
 <!-- 	<script src="../resources/js/holder.js"></script> -->

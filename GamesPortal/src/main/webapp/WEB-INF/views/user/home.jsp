@@ -54,6 +54,7 @@
 	</head>
 	<body role="document">
 		<%@include file="../includes/header2.jsp"%>
+
 		<div class=" client-photo-background">
 			<div class="container-fluid">
 				<div class="row">

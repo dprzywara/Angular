@@ -51,7 +51,7 @@
           <div class="jumbotron ">
             <h1>Witaj!</h1>
             <p>Sprawdź swoją wiedzę, zmierz się ze znajomymi odpowiadając na pytania z róznych dziedzin. Dołącz do grona zadowolonych graczy!</p>
-          <a href="/kurierzy/main/client/registration.do"><button type="button" class="btn btn-lg btn-primary">Zarejestruj się!</button></a> 
+          <a href="<c:url value='/registration' />"><button type="button" class="btn btn-lg btn-primary">Zarejestruj się!</button></a> 
           
           </div>
 <!--           <div class="row"> -->

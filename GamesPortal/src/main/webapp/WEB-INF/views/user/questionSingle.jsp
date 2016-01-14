@@ -9,7 +9,6 @@
 		<title>Play guiz</title>
 <!--custom CSS  -->
 <link href="../../../resources/css/dashboard.css" rel="stylesheet">
-<link href="../../resources/css/custom/stylesheet.css" rel="stylesheet">
 
 </head>
 <body role="document">
@@ -32,7 +31,7 @@
 					<div class="question">
 
 
-						<form:form class="answerForm" action="${contextPath}/user/quiz/postAnswer" method="POST"
+						<form:form class="answerForm" action="${contextPath}/user/quiz/postAnswer/single" method="POST"
 							modelAttribute="question">
 							<form:label path="question">${currentCount}. ${question.question}</form:label>
 							</br>
@@ -66,106 +65,7 @@
 					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
 						</form>
 						
-						<section class="section">
 						
-						<div class="waiting">
-
-						<h2>Waiting for opponent answer</h2>
-
-						</div>
-						
-						<div class="infoRight">
-				<h2><span class="nickname-chat"></span> has just answered</h2>
-				<br/>
-				</div>
-						
-<!-- 						<div class="left"> -->
-
-<!-- 			<img src="../../../../resources/images/unnamed.jpg" id="leftImage" /> -->
-
-<!-- 			<div class="info"> -->
-<!-- 				<h2><span class="nickname-left"></span> has left this quiz.</h2> -->
-<!-- 				<h5>You win this game!.</h5> -->
-<!-- 			</div> -->
-
-<!-- 		</div> -->
-						</section>
-						
-						
-<!-- 						======================== -->
-
-
-<div class="connected">
-
-			<img src="../../../../resources/images/unnamed.jpg" id="creatorImage" />
-
-			<div class="infoConnected">
-				<h2>Who are you?</h2>
-				<br/>
-
-				<form class="loginForm">
-					<input type="hidden" id="yourName" value="${username}" /><br/>
-					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
-					<input type="submit" id="yourEnter" value=" Rozpocznij czat " />
-				</form>
-
-			</div>
-
-		</div>
-
-		<div class="personinside">
-
-			<img src="../../../../resources/images/unnamed.jpg" id="ownerImage" />
-
-			<div class="infoInside">
-				<h2>Play with <span class="nickname-chat"></span></h2>
-				<br/>
-
-				<form class="loginForm">
-					<input type="text" id="hisName" placeholder="Your nick name" /><br/>
-					<input type="text" id="hisEmail" placeholder="Your email address" /><br/>
-					<input type="submit" id="hisEnter" value="CHAT" />
-				</form>
-
-			</div>
-
-		</div>
-
-		
-
-		
-
-		<div class="toomanypeople">
-
-			<h2>Oops, you can not join this chat!</h2>
-			<h5>There are already two people in it. Would you like to create a <a title="New Room" href="/create" id="room">new room</a>?</h5>
-
-		</div>
-
-		
-
-		<div class="chatscreen">
-
-			<ul class="chats">
-				<!-- The chat messages will go here -->
-			</ul>
-
-		</div>
-
-<!-- section -->
-
-	<footer>
-
-		<form id="chatform">
-
-			<textarea id="message" placeholder="Write something.."></textarea>
-			<input type="submit" id="submit" value="SEND"/>
-
-		</form>
-
-	</footer>
-
-<!-- ------------------------------- -->
 
 					</div>
 				</div>
@@ -184,8 +84,6 @@
 
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="<c:url value="/resources/js/angular/chat/socket.io.js" />"></script>
-	<script src="<c:url value="/resources/js/angular/chat/chatQuestion.js" />"></script>
-	<script src="<c:url value="/resources/js/angular/chat/moment.min.js" />"></script>		
+	
 </body>
 </html>

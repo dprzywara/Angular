@@ -4,17 +4,21 @@ $(function(){
 
 	// getting the id of the room from the url
 	//var id = Number(window.location.pathname.match(/\/play\/(\d+)$/)[1]);
-	var id = Number(window.location.pathname.match(/\/play\/(\d+)\/(\d+)$/)[1]);
+	//var id = Number(window.location.pathname.match(/\/question\/(\d+)$/)[1]);
+	var id = document.getElementById("roomId").innerHTML;
+	console.log("takie mam id: "+id);
+	var mojWynik;//=document.getElementById("myScore").innerHTML;
 //var id=5;
 	// connect to the socket
 	var socket = io('http://localhost:8090');
 	
+	var otrzymal=false;
 	// variables which hold the data for each person
 	var name = "",
 		email = "",
 		img = "",
 		friend = "";
-
+	
 	// cache some jQuery objects
 	var section = $(".section"),
 		footer = $("footer"),
@@ -26,18 +30,24 @@ $(function(){
 		noMessages = $(".nomessages"),
 		tooManyPeople = $(".toomanypeople"),
 		graa= $(".graa"),
-		waiting= $(".waiting");
+		question= $(".question"),
+		result= $(".waiting"),
+		end= $("#endButton"),
+		waiting= $(".summary");
 		
 	// some more jquery objects
 	var chatNickname = $(".nickname-chat"),
 		leftNickname = $(".nickname-left"),
 		loginForm = $(".loginForm"),
+		answerForm = $(".answerForm"),
 		yourName = $("#yourName"),
+		score = $("#myScore"),
 		yourEmail = $("#yourEmail"),
 		hisName = $("#hisName"),
 		hisEmail = $("#hisEmail"),
 		chatForm = $("#chatform"),
 		textarea = $("#message"),
+		textToDisplay = $("#textToDisplay"),
 		messageTimeSent = $(".timesent"),
 		chats = $(".chats");
 
@@ -52,8 +62,10 @@ $(function(){
 		
 		name = $.trim(yourName.val());
 		email = yourEmail.val();
+		mojWynik = score.val();
 		socket.emit('login', {user: name, avatar: email, id: id});
 		console.log("poszed emit z "+name+' '+email+' '+id);
+		
 
 		socket.emit('load', id);
 		
@@ -66,90 +78,97 @@ $(function(){
 
 	// receive the names and avatars of all people in the chat room
 	socket.on('peopleinchat', function(data){
+		
+		
+		//alert("userow w czacie "+data.number);
+		
+		
+//		if(data.number === 0){
+//			
+//			alert("nie ma nikogow czacie");
+//			
+//showMessage("start");
+//
+//			loginForm.on('submit', function(e){
+//
+//				e.preventDefault();
+//
+//				name = $.trim(yourName.val());
+//				
+//				if(name.length < 1){
+//					alert("Please enter a nick name longer than 1 character!");
+//					return;
+//				}
+//
+//				email = yourEmail.val();
+//
+//				if(!isValid(email)) {
+//					alert("Please enter a valid email!");
+//				}
+//				else {
+//
+//					showMessage("inviteSomebody");
+//
+//					// call the server-side function 'login' and send user's parameters
+//					socket.emit('login', {user: name, avatar: email, id: id});
+//				}
+//			
+//			});
+//		}
 
-		if(data.number === 0){
-			
-			alert("nie ma nikogow czacie");
-			document.getElementById('ttt').disabled = false;
-			
-			//showMessage("connected");
-
-			loginForm.on('submit', function(e){
-
-				e.preventDefault();
-
-				name = $.trim(yourName.val());
-				
-				if(name.length < 1){
-					alert("Please enter a nick name longer than 1 character!");
-					return;
-				}
-
-				email = yourEmail.val();
-
-				if(!isValid(email)) {
-					alert("Please enter a valid email!");
-				}
-				else {
-
-					showMessage("inviteSomebody");
-
-					// call the server-side function 'login' and send user's parameters
-					socket.emit('login', {user: name, avatar: email, id: id});
-				}
-			
-			});
-		}
-
-		else if(data.number === 1) {
-			
-			//alert("jedna osoba w czacie " +data.user);
-			//showMessage("graa");
-			//showMessage("inviteSomebody");
-
-			showMessage("personinchat",data);
-
-			loginForm.on('submit', function(e){
-
-				e.preventDefault();
-
-				name = $.trim(hisName.val());
-
-				if(name.length < 1){
-					alert("Please enter a nick name longer than 1 character!");
-					return;
-				}
-
-				if(name == data.user){
-					alert("There already is a \"" + name + "\" in this room!");
-					return;
-				}
-				email = hisEmail.val();
-
-				if(!isValid(email)){
-					alert("Wrong e-mail format!");
-				}
-				else {
-					socket.emit('login', {user: name, avatar: email, id: id});
-				}
-
-			});
-		}
-
-		else {
-			showMessage("tooManyPeople");
-		}
+//		else
+//			if(data.number === 1) {
+//			
+//			//alert("jedna osoba w czacie " +data.user);
+//			//showMessage("graa");
+//			//showMessage("inviteSomebody");
+//
+//			//showMessage("personinchat",data);
+//
+//			loginForm.on('submit', function(e){
+//
+//				e.preventDefault();
+//
+//				name = $.trim(hisName.val());
+//
+//				if(name.length < 1){
+//					alert("Please enter a nick name longer than 1 character!");
+//					return;
+//				}
+//
+//				if(name == data.user){
+//					alert("There already is a \"" + name + "\" in this room!");
+//					return;
+//				}
+//				email = hisEmail.val();
+//
+//				if(!isValid(email)){
+//					alert("Wrong e-mail format!");
+//				}
+//				else {
+//					socket.emit('login', {user: name, avatar: email, id: id});
+//				}
+//
+//			});
+//		}
+//
+//		else {
+//			showMessage("tooManyPeople");
+//		}
 
 	});
 
 	// Other useful 
 
 	socket.on('startChat', function(data){
+		//alert("weslo do start czat");
+		socket.emit('wynik', {user: name, wynik: mojWynik});
+		console.log("poszed emit z "+name+' '+mojWynik);
 		console.log(data);
 		if(data.boolean && data.id == id) {
 
 			chats.empty();
-
+//to wykorzystac do tego co ma sie kiedy pokazywac
 			if(name === data.users[0]) {
 
 				showMessage("youStartedChatWithNoMessages",data);
@@ -167,8 +186,8 @@ $(function(){
 
 		if(data.boolean && id==data.room){
 
-			//showMessage("somebodyLeft", data);
-			//chats.empty();
+			showMessage("somebodyLeft", data);
+			chats.empty();
 		}
 
 	});
@@ -191,6 +210,7 @@ $(function(){
 		}
 	});
 
+
 	textarea.keypress(function(e){
 
 		// Submit the form on enter
@@ -201,6 +221,45 @@ $(function(){
 		}
 
 	});
+	
+
+		
+		
+		
+		
+		
+
+	
+	socket.on('wynik', function(data){
+
+			//odblokowuje ekran czekania i daje submit
+		//alert("otrzymalem wynik " +data.wynik);
+		if(mojWynik>data.wynik){
+			textToDisplay.text("You win! Result "+mojWynik+" - "+data.wynik);
+			result.fadeIn(1200);
+		}
+		if(mojWynik<data.wynik){
+			textToDisplay.text("You lose! Result "+mojWynik+" - "+data.wynik);
+			result.fadeIn(1200);
+		}
+		if(mojWynik==data.wynik){
+			textToDisplay.text("Remis "+mojWynik+" - "+data.wynik);
+			result.fadeIn(1200);
+		}
+	});
+	socket.on('end', function(data){
+		window.location.assign("http://"+window.location.host+"/GamesPortal/user/home");
+		
+	});
+	
+
+    end.on('click',function (e) {
+    	e.preventDefault();
+        socket.emit('end', {user: name, msg: 'koniec'});
+        window.location.assign("http://"+window.location.host+"/GamesPortal/user/home");
+    });
+
+   
 
 	chatForm.on('submit', function(e){
 
@@ -290,7 +349,7 @@ $(function(){
 			$("#link").text(window.location.href);
 
 			onConnect.fadeOut(1200, function(){
-				inviteSomebody.fadeIn(1200);
+				//inviteSomebody.fadeIn(1200);
 			});
 		}
 
@@ -299,7 +358,7 @@ $(function(){
 			//onConnect.css("display", "none");
 			//personInside.fadeIn(1200);
 			
-			waiting.fadeIn(1200);
+			//waiting.fadeIn(1200);
 			chatNickname.text(data.user);
 			ownerImage.attr("src",data.avatar);
 		}
@@ -307,17 +366,17 @@ $(function(){
 		else if(status === "youStartedChatWithNoMessages") {
 			
 
-			left.fadeOut(1200, function() {
-				waiting.fadeOut(1200,function(){
-					//noMessages.fadeIn(1200);
-					graa.fadeIn(1200);
-					footer.fadeIn(1200);
-				});
-//				inviteSomebody.fadeOut(1200,function(){
-//					noMessages.fadeIn(1200);
+//			left.fadeOut(1200, function() {
+//				waiting.fadeOut(1200,function(){
+//					//noMessages.fadeIn(1200);
+//					graa.fadeIn(1200);
 //					footer.fadeIn(1200);
 //				});
-			});
+////				inviteSomebody.fadeOut(1200,function(){
+////					noMessages.fadeIn(1200);
+////					footer.fadeIn(1200);
+////				});
+//			});
 
 			friend = data.users[1];
 			noMessagesImage.attr("src",data.avatars[1]);
@@ -326,11 +385,11 @@ $(function(){
 		else if(status === "heStartedChatWithNoMessages") {
 			
 
-			waiting.fadeOut(1200,function(){
-				//noMessages.fadeIn(1200);
-				graa.fadeIn(1200);
-				footer.fadeIn(1200);
-			});
+//			waiting.fadeOut(1200,function(){
+//				//noMessages.fadeIn(1200);
+//				graa.fadeIn(1200);
+//				footer.fadeIn(1200);
+//			});
 //			personInside.fadeOut(1200,function(){
 //				noMessages.fadeIn(1200);
 //				footer.fadeIn(1200);
@@ -350,6 +409,17 @@ $(function(){
 
 			section.children().css('display','none');
 			graa.fadeIn(1200);
+		}
+		else if(status === "waiting"){
+			
+			section.children().css('display','none');
+			question.fadeOut();
+			waiting.fadeIn(1200);
+		}
+		else if(status === "start"){
+			
+			section.children().css('display','none');
+			question.fadeIn(1200);
 		}
 
 		else if(status === "somebodyLeft"){

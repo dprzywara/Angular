@@ -363,6 +363,18 @@ body {
 /* 	box-shadow:0px 3px 3px #e3e4e6; */
 /* 	color: #637277; */
 }
+.infoRight {
+	text-align:right;
+/* 	display: block; */
+	margin:0px auto;
+	width: 750px;
+	height: 300px;
+/* 	overflow: hidden; */
+/* 	background-color: #ffffff; */
+/* 	border-radius: 3px; */
+/* 	box-shadow:0px 3px 3px #e3e4e6; */
+/* 	color: #637277; */
+}
 
 
 /* ------ Left ------*/
@@ -489,7 +501,7 @@ body {
 
 .image {
 	clear:both;
-	float:left;
+	float:right; /* bylo left */
 	height: 160px;
 	width: 80px;
 	text-align:center;
@@ -519,18 +531,18 @@ body {
 
 .me {
 	clear:both;
-	float:left;
+	float:right;
 	margin-bottom:10px;
 }
 
 .you {
 	clear:both;
-	float:right;
+	float:left;
 	margin-bottom:10px;
 }
 
 .you .image{
-	float:right;
+	float:left;
 }
 
 .chats .me p {
@@ -543,7 +555,8 @@ body {
 	min-width: 160px;
 	min-height: 10px;
 	max-width: 510px;
-	background-color: #FFF;
+/* 	background-color: #FFF; */
+	background-color:#87CEFA;
 	border-radius: 3px;
 	box-shadow: 0px 3px 3px #E3E4E6;
 	color: #637277;
@@ -561,7 +574,7 @@ body {
 	min-width: 160px;
 	min-height: 10px;
 	max-width: 510px;
-	background-color: #FFF;
+	background-color: #FFFACD;
 	border-radius: 3px;
 	box-shadow: 0px 3px 3px #E3E4E6;
 	color: #637277;
@@ -590,14 +603,14 @@ body {
 footer {
 	position:fixed;
 	bottom:0;
-	left:0;
+	left:200px; 
 	width:100%;
 	padding-top: 30px;
 	background-color: white;
 	height: 130px;
 }
 #chatform {
-	width:700px;
+	width:800px;
 	margin: 0 auto;
 	background-color: white;
 }
@@ -678,7 +691,10 @@ footer {
 
 .chatscreen{
 	display:none;
-	width:700px;
+/* 	left:0; */
+	width:800px;
+	background-color: #FFFFFF;
 	margin: 0 auto 200px;
 	overflow:hidden;
+
 }

@@ -241,6 +241,13 @@ tbody,
 	background: #fff ;
 }
 
+.sss {
+   height: 35px;
+   font-size: 18px;
+/*    background: none; */
+/*    dispaly: inline ; */
+text-align: center;
+}
 
   .sideblock {
 /*     position: fixed; */

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,7 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +29,7 @@ import com.project.inz.dao.UserDao;
 import com.project.inz.model.ScoreCard;
 import com.project.inz.model.User;
 import com.project.inz.service.QuizService;
+import com.project.inz.service.RoleService;
 import com.project.inz.service.ScoreCardService;
 import com.project.inz.service.UserService;
 
@@ -50,6 +54,11 @@ public class HomeController {
 	
 	 @Autowired
 	 QuizService quizService;
+	 
+		
+		
+		@Autowired
+		RoleService roleService;
 	//@RequestMapping(value = "/", method = RequestMethod.GET)
 	//public String defaultPage() {
 
@@ -155,6 +164,44 @@ public class HomeController {
 //
 //	}
 	
+	 
+
+		@RequestMapping(value ="/registration", method = RequestMethod.GET)
+		public String addUser(Map<String, Object> map) {
+			User nowy = new User();
+			nowy.setEnabled(true);
+			map.put("user", nowy);
+			map.put("roleList", roleService.listRoles());
+			map.put("edit",false);
+			
+			return "/user/register";
+		}
+		
+		
+		@RequestMapping(value = "/registration", method = RequestMethod.POST)
+		public String saveUser(@Valid User user, BindingResult result, Map<String, Object> map) {
+			if (result.hasErrors()) {
+				
+				map.put("user", user);
+				//map.put("roleList", roleService.listRoles());
+				
+				return "/user/registration";
+			 
+			} else {
+			 
+			    // form input is ok
+				
+			userService.saveUser(user);
+			
+			return "redirect:/";
+			}
+		}
+		
+		
+
+		
+	 
+	 
 	
 	
 	

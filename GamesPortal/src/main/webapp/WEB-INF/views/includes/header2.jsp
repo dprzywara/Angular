@@ -30,7 +30,7 @@
        <li><a id="messages" href="${contextPath}/user/invitations" title="Zaproszenia"><span
 								class="glyphicon glyphicon-inbox" aria-hidden="true"></span></a>
 						</li>
-						<li><a href="${currentUrl}/mails" title="Wiadomości"><span
+						<li><a id="chatInvitations" href="${contextPath}/user/chat/invitations" title="Wiadomości"><span
 								class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
 						</li>
 <!-- 						<li><a href="/kurierzy/main/admin/rides_history" title="Historia kursów"><span -->

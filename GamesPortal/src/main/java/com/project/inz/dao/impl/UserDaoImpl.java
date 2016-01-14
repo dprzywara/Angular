@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +19,6 @@ import com.project.inz.model.User;
 public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	
 	
-	//@Autowired
-	//PasswordEncoder passwordEncoder;
-	
 	
     public User findById(Integer id) {
     	
@@ -32,8 +30,10 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
     }
  
     public void saveUser(User user) {
-    	//String hashedPassword = passwordEncoder.encode(user.getPassword());  
-	//	user.setPassword(hashedPassword);
+
+//		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  
+//		  String hashedPassword = passwordEncoder.encode(user.getPassword());  
+//		user.setPassword(hashedPassword);
         persist(user);
     }
  
@@ -64,8 +64,9 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
     }
     
     public void updateUser(User user){
-    	saveOrUpdate(user);
+    	//saveOrUpdate(user);
 		//update(user);
+    	merge(user);
 	}
     
     

@@ -24,13 +24,13 @@
 					<%@include file="../includes/side_bar.jsp"%>
 					<div class="col-xs-9 col-xs-offset-3 col-md-10 col-md-offset-2">
 						<div class="jumbotron">
+						
+						<form class="loginForm">
+					<input type="hidden" id="yourName" value="${username}" /><br/>
+					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
+						</form>
 	
-				</br>
-<div  id="login">${username}</div>				
-
-
-
-	<section class="section">
+<section class="section">
 
 		<!-- These elements are displayed as white info cards in the middle of the screen -->
 
@@ -43,36 +43,26 @@
 				<br/>
 
 				<form class="loginForm">
-					<input type="hidden" id="yourName" value="${username}" /><br/>
-					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
-					<input type="submit" id="yourEnter" value=" Rozpocznij czat " />
+					<input type="text" id="yourName" placeholder="Your nick name" /><br/>
+					<input type="text" id="yourEmail" placeholder="Your email address" /><br/>
+					<input type="submit" id="yourEnter" value="ENTER" />
 				</form>
 
 			</div>
 
 		</div>
 
-		<div class="personinside">
+		<div class="waiting">
 
-			<img src="../../resources/images/unnamed.jpg" id="ownerImage" />
+<!-- 			<img src="../../resources/images/unnamed.jpg" id="ownerImage" /> -->
 
-			<div class="infoInside">
-				<h2>Chat with <span class="nickname-chat"></span></h2>
-				<br/>
-
-				<form class="loginForm">
-					<input type="text" id="hisName" placeholder="Your nick name" /><br/>
-					<input type="text" id="hisEmail" placeholder="Your email address" /><br/>
-					<input type="submit" id="hisEnter" value="CHAT" />
-				</form>
-
-			</div>
+				<h2>Waiting for chat member</h2>
 
 		</div>
 
 		<div class="invite-textfield">
 
-			<h2>Waiting for user</h2>
+			<h2>Oops, there are no other people in this chat!</h2>
 			<h5>Invite a friend by sending them this URL</h5>
 
 			<div class="link">
@@ -131,10 +121,8 @@
 
 	</footer>
 
-	
-
-
-
+</div>
+</div>
 
 
 			</div>
@@ -142,8 +130,6 @@
 </div>
 </div>
 
-		</div>
-	</div>
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="<c:url value="/resources/js/angular/chat/socket.io.js" />"></script>

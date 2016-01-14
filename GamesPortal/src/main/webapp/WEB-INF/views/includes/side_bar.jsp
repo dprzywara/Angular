@@ -41,13 +41,13 @@
 				<div class="col-xs-3 col-md-2 sidebar">
 						<h3><spring:message code="admin.title" /></h3>
 						<ul class="nav nav-sidebar">
-						<li><a href="${contextPath}/admin/users"><spring:message code="sidebar.users" /></a></li>
-						<li><a href="${contextPath}/admin/categories"><spring:message code="sidebar.categories" /></a></li>
-						<li><a href="${contextPath}/admin/questions"><spring:message code="sidebar.questions" /></a></li>
-						<li><a href="${contextPath}/admin/quizes"><spring:message code="sidebar.quizes" /></a></li>
-						<li><a href="/quizzme/quiz/create"><span
+						<li><a href="${contextPath}/admin/users"><span class="glyphicon glyphicon-user "><spring:message code="sidebar.users" /></a></li>
+						<li><a href="${contextPath}/admin/categories"><span class="glyphicon glyphicon-list-alt "><spring:message code="sidebar.categories" /></a></li>
+						<li><a href="${contextPath}/admin/questions"><span class="glyphicon glyphicon-folder-open "><spring:message code="sidebar.questions" /></a></li>
+						<li><a href="${contextPath}/admin/quizes"><span class="glyphicon glyphicon-play "><spring:message code="sidebar.quizes" /></a></li>
+						<li><a href="/quizzme/quiz/create "><span
 							class="glyphicon glyphicon-plus"></span> Create Quizzes</a></li>
-						<li><a href="${contextPath}/admin/games"><spring:message code="sidebar.games" /></a></li>
+						<li><a href="${contextPath}/admin/games"><span class="glyphicon glyphicon-align-justify "><spring:message code="sidebar.games" /></a></li>
 						</ul>
 						
 							<ul class="nav nav-sidebar">

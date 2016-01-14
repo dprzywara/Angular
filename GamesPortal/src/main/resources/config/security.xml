@@ -11,15 +11,15 @@
     <http pattern="/rest/**" security="none"/>
     <http pattern="/resources/**" security="none"/>
 	<!-- enable use-expressions -->
+	<!-- 		<intercept-url pattern="/**" access="isAuthenticated()" /> -->
+<!-- 		<intercept-url pattern="/**" access="permitAll" /> -->
+<!-- 		<intercept-url pattern="/rest/**" access="permitAll" /> -->
+	
 	<http auto-config="false" use-expressions="true">
 <!-- 		<intercept-url pattern="/admin**" access="hasRole('ROLE_ADMIN')" /> -->
 <!-- 		<intercept-url pattern="/user**" access="hasRole('ROLE_USER')" /> -->
-<!-- 		<intercept-url pattern="/**" access="isAuthenticated()" /> -->
-<!-- 		<intercept-url pattern="/**" access="permitAll" /> -->
-<!-- 		<intercept-url pattern="/rest/**" access="permitAll" /> -->
 
-		<!-- access denied page -->
-<!-- 		<access-denied-handler error-page="/403" /> -->
+		<access-denied-handler error-page="/403" />
 		<form-login login-page="/login" 
 		authentication-failure-url="/login?error"
 		
@@ -29,12 +29,8 @@
 			login-processing-url="/j_spring_security_check"
 			/>
 			
-		
 		<logout logout-success-url="/login?logout" logout-url="/logout" />
-<!-- <logout logout-success-url="/" logout-url="/logout" />  -->
-		<!-- enable csrf protection -->
 		<csrf />
-		
 		
 		<session-management>
         	<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/login" session-registry-alias="sessionRegistry"/>
@@ -46,6 +42,29 @@
 	</authentication-manager>
 	
 	<beans:bean id="MyAuthenticationSuccessHandler" class="com.project.inz.configuration.MyAuthenticationSuccessHandler" />
+
+
+<!-- odtad -->
+
+	<!-- Authentication & encryption -->
+
+<!-- 	<beans:bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider"> -->
+<!-- 		<beans:property name="userDetailsService" ref="loginService"></beans:property> -->
+<!-- 	</beans:bean> -->
+
+
+<!-- 	<authentication-manager> -->
+<!-- 		<authentication-provider user-service-ref="userDetailsService"> -->
+<!-- 			<password-encoder ref="encoder"></password-encoder> -->
+<!-- 		</authentication-provider> -->
+<!-- 	</authentication-manager> -->
+
+<!-- 	<beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"> -->
+<!-- 		<beans:constructor-arg name="strength" value="10" /> -->
+<!-- 	</beans:bean> -->
+
+<!-- dotad -->
+
 
 </beans:beans>  
 

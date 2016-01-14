@@ -37,20 +37,16 @@
 
 
 						<div class="container">
-							<a class="btn btn-success"
-								href="<c:url value="${currentUrl}/user/selectUser/all"/>"> <i
-								class="fa fa-plus"></i> <spring:message code="btn.searchUsers" />
-							</a> <a class="btn btn-primary"
-								href="<c:url value="${currentUrl}/user/selectUser/friends"/>">
-								<i class="fa fa-list"> </i> <spring:message code="btn.friends" />
-							</a> <br> <br>
+<!-- 							<br> <br>  -->
 
 
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-md-12">
 										<c:url var="actionUrl" value="/save" />
-										<div class="centerForm">
+										
+										
+<!-- 										<div class="centerForm"> -->
 
 											
 
@@ -117,10 +113,14 @@
 <%-- </form:form>   --%>
 
 
-									<a class="btn btn-primary"
-										href="<c:url value="/"/>"> <i
-										class="fa fa-pencil"></i> <spring:message code="btn.Edit" />
-									</a>Next</a>
+<!-- 									<a class="btn btn-primary" -->
+<%-- 										href="<c:url value="/"/>"> <i --%>
+<%-- 										class="fa fa-pencil"></i> <spring:message code="btn.Edit" /> --%>
+<!-- 									</a>Next</a> -->
+									
+									
+									
+									
 									<!-- /table-responsive -->
 
 
@@ -147,7 +147,7 @@
 <!-- 			   					 	</div> -->
 <!-- 								</div> -->
 								
-								<button type="button" class="btn btn-default" onclick="getchat();" >testy</button>
+<!-- 								<button type="button" class="btn btn-default" onclick="getchat();" >testy</button> -->
 
 </div>
 </div>
@@ -156,7 +156,7 @@
 <br>
 <br>
 <%-- <span id="login"><sec:authentication property="name" /></span>  --%>
-<div  id="login">${username}</div>
+<div  id="login" style="display:none" >${username}</div>
 <br>
 <%-- <div  ng-app="myApp"  ng-controller="SelectController as ctr" ng-init="init('<sec:authentication property="name" />')">	 --%>
 
@@ -197,7 +197,9 @@
 <!--                             <input type="text" name="invited" "/> -->
 <!--                               <button class="btn btn-primary btn-sm" ng-click="sendInvite(invite)">Invite</button>  -->
                         
-                        
+                         <a class="btn btn-warning" href="<c:url value='${currentUrl}/user/home' />">Cancel</a> 
+                             
+							 <a class="btn btn-primary" href="<c:url value='${currentUrl}/user/selectCategory' />">Back</a>
                         <table id="mytable" class="table table-bordered table-striped text-center" aria-describedby="mytable_info">
 								<thead>
 									<tr class="info"> 
@@ -205,18 +207,17 @@
 									<th width="10%"><spring:message code="table.options" /></th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody >
 									<c:forEach items="${users}" var="user">
 									<c:if test="${user.username ne username}">
 										<tr>
-											<td>${user.username}</td>
-                        <td>
-                           <form action="${contextPath}/user/select/${user.id}/${quizName}" method="post">
+											<td  style="vertical-align: middle;">${user.username}</td>
+                        <td style="vertical-align: middle;">
+                           <form style="margin-bottom:0px" action="${contextPath}/user/select/${user.id}/${quizName}" method="post">
                             <input type="submit" value="Invite"
 											class="btn btn-primary btn-sm" /> 
 											<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                              </form>
-                             
                               </td>
                          	 </tr>
                          	 </c:if>

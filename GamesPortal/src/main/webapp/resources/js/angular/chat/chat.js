@@ -3,8 +3,8 @@
 $(function(){
 
 	// getting the id of the room from the url
-	//var id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
-var id=5;
+	var id = Number(window.location.pathname.match(/\/messages\/(\d+)$/)[1]);
+
 	// connect to the socket
 	var socket = io('http://localhost:8090');
 	
@@ -36,7 +36,8 @@ var id=5;
 		chatForm = $("#chatform"),
 		textarea = $("#message"),
 		messageTimeSent = $(".timesent"),
-		chats = $(".chats");
+		chats = $(".chats"),
+		waiting= $(".waiting");
 
 	// these variables hold images
 	var ownerImage = $("#ownerImage"),
@@ -46,7 +47,12 @@ var id=5;
 
 	// on connection to server get the id of person's room
 	socket.on('connect', function(){
-
+		
+		name = $.trim(yourName.val());
+		email = yourEmail.val();
+		socket.emit('login', {user: name, avatar: email, id: id});
+		console.log("poszed emit z "+name+' '+email+' '+id);
+		
 		socket.emit('load', id);
 	});
 
@@ -281,7 +287,7 @@ var id=5;
 		else if(status === "personinchat"){
 
 			onConnect.css("display", "none");
-			personInside.fadeIn(1200);
+			waiting.fadeIn(1200);
 
 			chatNickname.text(data.user);
 			ownerImage.attr("src",data.avatar);
@@ -290,7 +296,7 @@ var id=5;
 		else if(status === "youStartedChatWithNoMessages") {
 
 			left.fadeOut(1200, function() {
-				inviteSomebody.fadeOut(1200,function(){
+				waiting.fadeOut(1200,function(){
 					noMessages.fadeIn(1200);
 					footer.fadeIn(1200);
 				});
@@ -302,7 +308,7 @@ var id=5;
 
 		else if(status === "heStartedChatWithNoMessages") {
 
-			personInside.fadeOut(1200,function(){
+			waiting.fadeOut(1200,function(){
 				noMessages.fadeIn(1200);
 				footer.fadeIn(1200);
 			});

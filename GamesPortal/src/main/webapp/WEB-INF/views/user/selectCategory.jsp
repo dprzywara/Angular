@@ -32,50 +32,54 @@
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 					<div class="jumbotron">
 						<h2 class="sub-header">
-							<spring:message code="sidebar.users" />
+							Select Category
 						</h2>
 
 
 						<div class="container">
-							<a class="btn btn-success"
-								href="<c:url value="${currentUrl}/user/selectUser/all"/>"> <i
-								class="fa fa-plus"></i> <spring:message code="btn.searchUsers" />
-							</a> <a class="btn btn-primary"
-								href="<c:url value="${currentUrl}/user/selectUser/friends"/>">
-								<i class="fa fa-list"> </i> <spring:message code="btn.friends" />
-							</a> <br> <br>
+<!-- 							<br> <br> -->
 
 
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-md-12">
 										<c:url var="actionUrl" value="/save" />
-										<div class="centerForm">
+<!-- 										<div class="centerForm"> -->
 
 											
 
-Select category:  
+ 
 <form:form method="POST" modelAttribute="category" class="form-horizontal">
 <%-- <form:input type="hidden" path="id" id="id"/> --%>
 
-<table>
 
-<tr>
-<td>Category : </td>
-<td>
-<form:select path="id">
-<%-- 	<form:option value="NONE" label="--- Select ---"/> --%>
+
+<div class="sss">Category: <form:select path="id">
 	<form:options items="${categoryList}" itemLabel="name" itemValue="id" />
 </form:select>
-</td>
-<td><form:errors path="id" cssClass="error" /></td>
-<td>
-<input type="submit" value="Dalej">  or <a href="<c:url value='${currentUrl}/user/home' />">Cancel</a>
-</td>
-</tr>
-</table>
-
+<form:errors path="id" cssClass="error" /><input class="btn btn-success" type="submit" value="Next"> <a class="btn btn-warning" href="<c:url value='${currentUrl}/user/home' />">Cancel</a></div>
 </form:form>
+
+<!-- < -->
+<!-- <table> -->
+
+<!-- <tr > -->
+
+<!-- <td>Category:  </td> -->
+<!-- <td> -->
+<%-- <form:select path="id" > --%>
+<%-- 	<form:options items="${categoryList}" itemLabel="name" itemValue="id" /> --%>
+<%-- </form:select> --%>
+ <!-- </td> --> 
+<%-- <td><form:errors path="id" cssClass="error" /></td> --%>
+<!-- <td> -->
+<%-- <input type="submit" value="Dalej">  or <a href="<c:url value='${currentUrl}/user/home' />">Cancel</a> --%>
+<!-- </td> -->
+
+<!-- </tr> -->
+<!-- </table> -->
+<!-- </div> -->
+
 
 <%-- <form:select path="category"> --%>
 <%-- 								<form:options items="${categoryList}" itemValue="id" /> --%>
@@ -88,7 +92,7 @@ Select category:
 
 </div>
 </div>
-</div>
+<!-- </div> -->
 </div>
 </div>
 </div>

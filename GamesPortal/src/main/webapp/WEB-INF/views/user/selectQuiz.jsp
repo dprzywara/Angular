@@ -32,29 +32,29 @@
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 					<div class="jumbotron">
 						<h2 class="sub-header">
-							<spring:message code="sidebar.users" />
+							Select Quiz
 						</h2>
 
 
 						<div class="container">
-							<a class="btn btn-success"
-								href="<c:url value="${currentUrl}/user/selectUser/all"/>"> <i
-								class="fa fa-plus"></i> <spring:message code="btn.searchUsers" />
-							</a> <a class="btn btn-primary"
-								href="<c:url value="${currentUrl}/user/selectUser/friends"/>">
-								<i class="fa fa-list"> </i> <spring:message code="btn.friends" />
-							</a> <br> <br>
+<!-- 							<a class="btn btn-success" -->
+<%-- 								href="<c:url value="${currentUrl}/user/selectUser/all"/>"> <i --%>
+<%-- 								class="fa fa-plus"></i> <spring:message code="btn.searchUsers" /> --%>
+<!-- 							</a> <a class="btn btn-primary" -->
+<%-- 								href="<c:url value="${currentUrl}/user/selectUser/friends"/>"> --%>
+<%-- 								<i class="fa fa-list"> </i> <spring:message code="btn.friends" /> --%>
+<!-- 							</a> -->
+<!-- 							 <br> <br> -->
 
 
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-md-12">
 										<c:url var="actionUrl" value="/save" />
-										<div class="centerForm">
+<!-- 										<div class="centerForm"> -->
 
 											
 
-Select quiz:  
 <%-- <form:form method="POST" modelAttribute="quiz" class="form-horizontal"> --%>
 <%-- <form:form method="POST" action="/user/home/selectUser" class="form-horizontal"> --%>
 <%-- <form:input type="hidden" path="id" id="id"/> --%>
@@ -63,24 +63,31 @@ Select quiz:
 <%-- <form:input type="hidden" path="category" id="category"/> --%>
 
 <form:form method="POST" modelAttribute="myform" action="${contextPath}/user/selectQuiz/"> 
-<table>
+<!-- <table> -->
 
-<tr>
-<td>Quiz : </td>
-<td>
+<!-- <tr> -->
+<!-- <td>Quiz : </td> -->
+<!-- <td> -->
+<%-- <form:select path="quizId"> --%>
+<%-- 	<form:options items="${quizList}" itemLabel="name" itemValue="id"  /> --%>
+<%-- </form:select> --%>
+<!-- </td> -->
+<%-- <td><form:errors path="quizId" cssClass="error" /></td> --%>
+<!-- <td> -->
+<%-- <input type="submit" value="Dalej">  or <a href="<c:url value='${currentUrl}/user/home' />">Cancel</a> --%>
+<!-- </td> -->
+<!-- </tr> -->
+<!-- </table> -->
+
+
+<div class="sss">Quiz: 
 <form:select path="quizId">
-	<form:options items="${quizList}" itemLabel="name" itemValue="id"  />
+	<form:options items="${quizList}" itemLabel="name" itemValue="id" />
 </form:select>
-</td>
-<td><form:errors path="quizId" cssClass="error" /></td>
-<td>
-<input type="submit" value="Dalej">  or <a href="<c:url value='${currentUrl}/user/home' />">Cancel</a>
-</td>
-</tr>
-</table>
+<form:errors path="quizId" cssClass="error" /><input class="btn btn-success" type="submit" value="Next"> <a class="btn btn-warning" href="<c:url value='${currentUrl}/user/home' />">Cancel</a> <a class="btn btn-primary" href="<c:url value='${currentUrl}/user/selectCategory' />">Back</a></div>
 
 </form:form>
-</div>
+<!-- </div> -->
 </div>
 </div>
 </div>

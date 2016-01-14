@@ -24,28 +24,23 @@
 					<div class="panel-heading">${quiz.name}</div>
 					<div class="panel-body">
 					
-					<div id="roomId" style="display:none" >${room}</div>
+<%-- 					<div id="roomId" style="display:none" >${room}</div> --%>
 					
-					<form class="loginForm">
-					<input type="hidden" id="yourName" value="${username}" /><br/>
-					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
-					<input type="hidden" id="myScore" value="${myScore}"  /><br/>
-<%-- 					<input type="hidden" id="roomId" value="${room}" /><br/> --%>
-						</form>
-						<section class="section">
-<div class="waiting">
+					
 
-
-<h2 id="textToDisplay"> !</h2>
 						
 						<label>Congratulations on completing the quiz!</label></br> 
 						<label>Your score for the quiz: ${myScore} / ${maxPoints}</label></br>
 						<label>Highest score till now: ${highestScore}</label></br>
 <%-- 						<a href="${contextPath}/user/home" class="btn btn-primary" id="end">End</a> --%>
-						<button class="btn btn-primary" id="endButton">End</button>
+						<a class="btn btn-warning" href="<c:url value='${currentUrl}/user/home' />">End</a>
 						
-</div>
-</section>
+<form class="loginForm">
+					<input type="hidden" id="yourName" value="${username}" /><br/>
+					<input type="hidden" id="yourEmail" value="${email}"  /><br/>
+					<input type="hidden" id="myScore" value="${myScore}"  /><br/>
+<%-- 					<input type="hidden" id="roomId" value="${room}" /><br/> --%>
+						</form>
 					</div>
 				</div>
 
@@ -62,8 +57,5 @@
 	<script
 		src="http://cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="<c:url value="/resources/js/angular/chat/socket.io.js" />"></script>
-	<script src="<c:url value="/resources/js/angular/chat/chatSummary.js" />"></script>
-	<script src="<c:url value="/resources/js/angular/chat/moment.min.js" />"></script>	
 </body>
 </html>

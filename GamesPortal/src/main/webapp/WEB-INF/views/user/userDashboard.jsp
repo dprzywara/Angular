@@ -161,6 +161,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<!-- Rest-client -->
 		<script src="<c:url value="/resources/js/rest-client.js" />"></script>
+<%-- 		<script src="<c:url value="/resources/js/rest-chat-client.js" />"></script> --%>
 
 <!-- 	<script src="../resources/js/lib/bootstrap.min.js"></script> -->
 <!-- 	<script src="../resources/js/holder.js"></script> -->

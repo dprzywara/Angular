@@ -30,6 +30,7 @@ $(function(){
 		noMessages = $(".nomessages"),
 		tooManyPeople = $(".toomanypeople"),
 		graa= $(".graa"),
+		info =$("infoRight"),
 		question= $(".question"),
 		waiting= $(".waiting");
 		
@@ -212,10 +213,10 @@ showMessage("start");
 	
 	answerForm.on('submit', function(e){
 		e.preventDefault();
-		alert("weszlo do submita")
+		//alert("weszlo do submita")
 		zatwierdzilem=true;
 		if(zatwierdzilem  && odpowiedzial){
-			alert("obaj odpowiedzielismy idzie submit");
+			//alert("obaj odpowiedzielismy idzie submit");
 			zatwierdzilem=false;
 			odpowiedzial=false;
 			this.submit(); 
@@ -257,7 +258,8 @@ showMessage("start");
 		odpowiedzial=true;
 
 			//odblokowuje ekran czekania i daje submit
-		alert("przeciwnik odpowiedzial");
+		//alert("przeciwnik odpowiedzial");
+		info.fadeIn(1200);
 		if(zatwierdzilem)waiting.fadeOut();
 		if(zatwierdzilem)question.fadeIn(1200);
 		if(zatwierdzilem)answerForm.submit();

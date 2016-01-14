@@ -3,7 +3,10 @@ package com.project.inz.controller;
 
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -89,18 +92,39 @@ public class UserController {
 	
 	
 	
+	/**
+	 * This method will provide the medium to update an existing user.
+	 */
+	@RequestMapping(value = { "/edit-user-{id}" }, method = RequestMethod.GET)
+	public String editUser(@PathVariable Integer id, ModelMap model) {
+		
+		
+		
+		User user = userService.findById(id);
+		model.addAttribute("user", user);
+		model.addAttribute("roleList", roleService.listRoles());
+		model.addAttribute("edit", true);
+		return "/user/userForm";
+	}
 	
+	/**
+	 * This method will be called on form submission, handling POST request for
+	 * updating user in database. It also validates the user input
+	 */
+	@RequestMapping(value = { "/edit-user-{userId}" }, method = RequestMethod.POST)
+	public String updateUser(@Valid User user, BindingResult result,
+			ModelMap model, @PathVariable String userId) {
+
+		if (result.hasErrors()) {
+			return "/user/userForm";
+		}
+
+		userService.updateUser(user);
+
+		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
+		return "redirect:/user/home";
+	}
 	
-//	@RequestMapping("/home")
-//	public void home(Model model) {
-//		Authentication auth = SecurityContextHolder.getContext()
-//				.getAuthentication();
-//		if (auth != null) {
-//			String login = auth.getName();
-//			model.addAttribute("username", login);
-//			model.addAttribute("userRole", auth.getAuthorities());
-//		}
-//	}
 	
 	@RequestMapping(value="/test", method = RequestMethod.GET)
 	public String  teest(Map<String, Object> parameters) {
@@ -168,8 +192,14 @@ public class UserController {
 			return "redirect:/";
 		}
 		List<Quiz> quizList = quizService.getAllQuizzes();
+		List<Quiz> quizList4User = new ArrayList<Quiz>();
+		for (Quiz quiz : quizList) {
+			if(!(scoreService.checkIfUserHasPlayedQuiz(user, quiz.getId()))){
+				quizList4User.add(quiz);
+			}
+		}
 		model.addAttribute("username", username);
-		model.addAttribute("quizList", quizList);
+		model.addAttribute("quizList", quizList4User);
 		return "listQuizzes";
 	}
 	
@@ -186,12 +216,32 @@ public class UserController {
 		}
 		Quiz attemptingQuiz = quizService.getQuiz(quizId);
 		
-		System.out.println("quiz wyslany do attempt "+attemptingQuiz.getName());
+		//System.out.println("quiz wyslany do attempt "+attemptingQuiz.getName());
 		model.addAttribute("username", username);
 		model.addAttribute("quiz", attemptingQuiz);
 		model.addAttribute("email", user.getEmail());
 		model.addAttribute("room", room);
 		return "/user/quizAttempt";
+	}
+	
+	
+	@RequestMapping(value = "/quiz/play/{quizId}", method = RequestMethod.GET)
+	public String attemptQuiz(@PathVariable("quizId") int quizId,
+			HttpServletRequest request, Model model) {
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		User user = userService.findUserByLogin(username);
+		if (user == null) {
+			return "redirect:/";
+		}
+		Quiz attemptingQuiz = quizService.getQuiz(quizId);
+		
+		//System.out.println("quiz wyslany do attempt "+attemptingQuiz.getName());
+		model.addAttribute("username", username);
+		model.addAttribute("quiz", attemptingQuiz);
+		model.addAttribute("email", user.getEmail());
+		return "/user/quizAttemptsingle";
 	}
 	
 	
@@ -212,14 +262,28 @@ public class UserController {
 			return "redirect:/";
 		}
 		
-		if (scoreService.checkIfUserHasPlayedQuiz(user, quizId)) {
-			return "duplicateAttempt";
-		}
+//		if (scoreService.checkIfUserHasPlayedQuiz(user, quizId)) {
+//			return "duplicateAttempt";
+//		}
 		// get the quiz and store it in the session
 		Quiz quizToPlay = quizService.getQuiz(quizId);
 		request.getSession().setAttribute("quizBeingAnswered", quizToPlay);
 		Set<Question> questions = quizToPlay.getQuestions();
+		
+		
+		
 		List<Question> questionsToAnswer = new ArrayList<Question>(questions);
+		
+//		!!!!!!!!!!!!!!!!!!!!!!!!tutaj zmianyt
+		
+		Collections.sort(questionsToAnswer, new Comparator<Question>() {
+
+	        public int compare(Question o1, Question o2) {
+	            return o2.getId().compareTo(o1.getId());
+	        }
+	    });
+		///////////////////////////////////////////////////////
+		
 //		for (Iterator<Question> it = questions.iterator(); it.hasNext();) {
 //			Question currentQuestion = it.next();
 //			questionsToAnswer.add(currentQuestion);
@@ -243,6 +307,68 @@ public class UserController {
 		model.addAttribute("email", user.getEmail());
 		return "/user/question";
 
+	}
+	@RequestMapping(value = "/quiz/play/single", method = RequestMethod.POST)
+	public String attempQuizsingle(@RequestParam("count") Integer currentCount,
+			@RequestParam("quizId") Integer quizId, HttpServletRequest request,
+			Model model) {
+		
+		System.out.println("przychodzi quizId "+quizId + " i count "+ currentCount);
+		
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		
+		User user = userService.findUserByLogin(username);
+		if (user == null) {
+			return "redirect:/";
+		}
+		
+//		if (scoreService.checkIfUserHasPlayedQuiz(user, quizId)) {
+//			return "duplicateAttempt";
+//		}
+		// get the quiz and store it in the session
+		Quiz quizToPlay = quizService.getQuiz(quizId);
+		request.getSession().setAttribute("quizBeingAnswered", quizToPlay);
+		Set<Question> questions = quizToPlay.getQuestions();
+		
+		
+		
+		List<Question> questionsToAnswer = new ArrayList<Question>(questions);
+		
+//		!!!!!!!!!!!!!!!!!!!!!!!!tutaj zmianyt
+		
+		Collections.sort(questionsToAnswer, new Comparator<Question>() {
+			
+			public int compare(Question o1, Question o2) {
+				return o2.getId().compareTo(o1.getId());
+			}
+		});
+		///////////////////////////////////////////////////////
+		
+//		for (Iterator<Question> it = questions.iterator(); it.hasNext();) {
+//			Question currentQuestion = it.next();
+//			questionsToAnswer.add(currentQuestion);
+//		}
+		
+		
+		request.getSession().setAttribute("questionsBeingAnswered",
+				questionsToAnswer);
+		// get the current question object and send it to the jsp
+		model.addAttribute("username", username);
+		Question currentQuestion = questionsToAnswer.get(currentCount);
+		model.addAttribute("question", currentQuestion);
+		model.addAttribute("quiz", quizToPlay);
+		model.addAttribute("currentCount", currentCount + 1);
+		if (currentCount == quizToPlay.getQuestions().size()) {
+			model.addAttribute("isLastQuestion", 1);
+		} else {
+			model.addAttribute("isLastQuestion", 0);
+		}
+//		model.addAttribute("room", room);
+		model.addAttribute("email", user.getEmail());
+		return "/user/questionSingle";
+		
 	}
 	
 	
@@ -304,6 +430,10 @@ public class UserController {
 			return "/user/question";
 
 		} else {
+			
+			@SuppressWarnings("unchecked")
+			List<Question> questionsToAnswer = (List<Question>) request
+					.getSession().getAttribute("questionsBeingAnswered");
 			// get the list of answered questions from session and pass it to
 			// service layer
 			answeredQuestions.add(question);
@@ -316,7 +446,11 @@ public class UserController {
 				model.addAttribute("username", username);
 				model.addAttribute("myScore", newScore.getScore());
 				model.addAttribute("quiz", quizToAttempt);
+				model.addAttribute("room", room);
+				model.addAttribute("maxPoints",questionsToAnswer.size());
+				model.addAttribute("email", user.getEmail());
 				model.addAttribute("highestScore", scoreService.findHighestScore(quizToAttempt.getScores()));
+				//if(invitationService.findById(room)!=null)invitationService.deleteInvitation(room); //tu jest problem
 				return "/user/scoreForAttemptedQuiz";
 			} else 
 				return "defaultError";
@@ -324,6 +458,87 @@ public class UserController {
 			// return score card view
 			//return "/user/scoreForAttemptedQuiz";
 
+	}
+	@RequestMapping(value = "/quiz/postAnswer/single", method = RequestMethod.POST)
+	public String postQuestionSingle(@ModelAttribute("question") Question question,
+			@RequestParam("isLastQuestion") Integer isLastQuestion,
+			@RequestParam("count") Integer currentCount,
+			HttpServletRequest request, Model model) {
+		// add to session and redirect to next question view
+		@SuppressWarnings("unchecked")
+		List<Question> answeredQuestions = (List<Question>) request
+		.getSession().getAttribute("answeredQuestions");
+		
+		
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		User user = userService.findUserByLogin(username);
+		if (user == null) {
+			return "redirect:/";
+		}
+		if (isLastQuestion == 0) {
+//jesli nie ma listy odpowiedzi to utworz i dodaj aktualne pytanie
+			if (answeredQuestions == null) {
+				answeredQuestions = new ArrayList<Question>();
+				answeredQuestions.add(question);
+				request.getSession().setAttribute("answeredQuestions",
+						answeredQuestions);
+			} else {
+				
+				//aktualizuj liste odpowiedzi
+				answeredQuestions.add(question);
+				request.getSession().setAttribute("answeredQuestions",
+						answeredQuestions);
+			}
+			@SuppressWarnings("unchecked")
+			List<Question> questionsToAnswer = (List<Question>) request
+			.getSession().getAttribute("questionsBeingAnswered");
+			Quiz quizToAttempt = (Quiz) request.getSession().getAttribute(
+					"quizBeingAnswered");
+			// get the current question object and send it to the jsp
+			Question currentQuestion = questionsToAnswer.get(currentCount);
+			model.addAttribute("username", username);
+			model.addAttribute("question", currentQuestion);
+			model.addAttribute("quiz", quizToAttempt);
+			model.addAttribute("currentCount", currentCount + 1);
+			if (currentCount + 1 == questionsToAnswer.size()) {
+				model.addAttribute("isLastQuestion", 1);
+			} else {
+				model.addAttribute("isLastQuestion", 0);
+			}
+			
+			model.addAttribute("email", user.getEmail());
+			return "/user/questionSingle";
+			
+		} else {
+			
+			@SuppressWarnings("unchecked")
+			List<Question> questionsToAnswer = (List<Question>) request
+			.getSession().getAttribute("questionsBeingAnswered");
+			// get the list of answered questions from session and pass it to
+			// service layer
+			answeredQuestions.add(question);
+			Quiz quizToAttempt = (Quiz) request.getSession().getAttribute(
+					"quizBeingAnswered");
+			ScoreCard newScore = scoreService.attemptQuiz(
+					quizToAttempt, user, answeredQuestions);
+			//ScoreCard currentScoreCard = newScore.getEntity();
+			if (newScore!=null) {
+				model.addAttribute("username", username);
+				model.addAttribute("myScore", newScore.getScore());
+				model.addAttribute("quiz", quizToAttempt);
+				model.addAttribute("maxPoints",questionsToAnswer.size());
+				model.addAttribute("email", user.getEmail());
+				model.addAttribute("highestScore", scoreService.findHighestScore(quizToAttempt.getScores()));
+				//if(invitationService.findById(room)!=null)invitationService.deleteInvitation(room); //tu jest problem
+				return "/user/scoreForAttemptedQuizSingle";
+			} else 
+				return "defaultError";
+		}
+		// return score card view
+		//return "/user/scoreForAttemptedQuiz";
+		
 	}
 	
 	
@@ -353,11 +568,11 @@ public class UserController {
 		
 		for (Object principal: principals) {
 		    if (principal instanceof org.springframework.security.core.userdetails.User) {
-		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal).getUsername());
+		        usersNamesList.add(((org.springframework.security.core.userdetails.User) principal)
+		        		.getUsername());
 		    }
 		}
 		for (String username : usersNamesList) {
-			//if(!(username.equals(currentUser)))
 				userList.add(userService.findUserByLogin(username));
 		}
 		map.put("users", userList);
@@ -579,6 +794,24 @@ public class UserController {
 			
 			return "redirect:/user/quiz/play/"+inv.getId()+"/"+quizId;
 		}
+		@RequestMapping(value = { "/selectChat/{invitedId}" }, method = RequestMethod.POST)
+		public String sendChatInvite(@PathVariable Integer invitedId) {
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			String login =null;
+			if (auth != null) {
+				login= auth.getName();
+			}
+			Invitation inv = new Invitation();
+			inv.setStatus("chat");
+			inv.setInvited(userService.findById(invitedId));
+			inv.setInviting(userService.findUserByLogin(login)); // trzeba dodac quiz jeszcze do invitation
+			inv.setQuizId(null);
+			invitationService.saveInvitation(inv);
+			
+			
+			return "redirect:/user/messages/"+inv.getId();
+		}
 		
 		@RequestMapping(value = "/invitations", method = RequestMethod.GET)
 		public String invitations(Model model) {
@@ -600,6 +833,31 @@ public class UserController {
 			
 			return "/user/invitations";
 		}
+		@RequestMapping(value = "/chat/invitations", method = RequestMethod.GET)
+		public String chatinvitations(Model model) {
+			List<User> listaKierowcow = userService.findAllUsers();
+			model.addAttribute("taxiList", listaKierowcow);
+			Authentication auth = SecurityContextHolder.getContext()
+					.getAuthentication();
+			
+			String login = new String();
+			if (auth != null) {
+				login = auth.getName();
+				model.addAttribute("userLogin", login);
+				model.addAttribute("userRole", auth.getAuthorities());
+			}
+			
+			User usr = userService.findUserByLogin(login);
+			Set<Invitation> listaZlecen = new HashSet<Invitation>();
+					for (Invitation inv : usr.getUserInvited()) {
+						if(inv.getStatus().equals("chat")){
+							listaZlecen.add(inv);
+						}
+					}
+			model.addAttribute("invitations", listaZlecen);
+			
+			return "/user/chatInvitations";
+		}
 		
 		
 		 @RequestMapping(value = "/invitation/reject/{id}", method = RequestMethod.GET)
@@ -614,8 +872,17 @@ public class UserController {
 			 
 			 //wyslij powiadomienie 
 			// invitationService.deleteInvitation(id);
+			 //if(invitationService.findById(room)!=null) invitationService.deleteInvitation(room);
 			 return "redirect:/user/quiz/play/"+room+"/"+id;
 		 }
 		
+		 @RequestMapping(value = "/chatInvitation/accept/{room}", method = RequestMethod.GET)
+		 public String chatAccept(@PathVariable("room")  Integer room, Map<String, Object> parameters) {
+			 
+			 //wyslij powiadomienie 
+			 if(invitationService.findById(room)!=null) invitationService.deleteInvitation(room);
+			 return "redirect:/user/messages/"+room;
+		 }
+		 
 		
 }

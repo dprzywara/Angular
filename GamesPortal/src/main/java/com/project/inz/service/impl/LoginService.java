@@ -27,7 +27,7 @@ public class LoginService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		com.project.inz.model.User user = userDao.findUserByUsername(username);
 		//Set<UserRole> roles =new HashSet<UserRole>();

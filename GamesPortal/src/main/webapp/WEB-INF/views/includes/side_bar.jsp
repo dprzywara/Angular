@@ -18,10 +18,10 @@
 							class="glyphicon glyphicon-play-circle"></span><spring:message code="sidebar.playQuizDirect" /></a></li>
 						<li><a href="${contextPath}/user/messages"><span
 							class="glyphicon glyphicon-envelope"></span><spring:message code="sidebar.messages" /></a></li>
-						<li><a href="${contextPath}/editaccount"><span class="glyphicon glyphicon-user"></span><spring:message code="sidebar.editAccount" /></a></li>
-						<li><a href="${contextPath}/editpassword"><span
+						<li><a href="${contextPath}/user/updateUser"><span class="glyphicon glyphicon-user"></span><spring:message code="sidebar.editAccount" /></a></li>
+						<li><a href="${contextPath}/user/changePassword"><span
 							class="glyphicon glyphicon-lock"></span><spring:message code="sidebar.changePassword" /></a></li>
-					<li><a href="/quizzme/quiz/search"><span
+					<li><a href="${contextPath}/user/chooseQuizComment"><span
 							class="glyphicon glyphicon-pencil"></span> <spring:message code="sidebar.comment" /></a></li>
 					
 					</ul>

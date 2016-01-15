@@ -490,5 +490,20 @@ public class MainRestController {
 			return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
 		}
 	}
+	
+	
+	@RequestMapping(value = "/invitation/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Quiz> deleteInvitation(@PathVariable("id") Integer id) {
+		System.out.println("Fetching & Deleting invitation with id " + id);
+
+		Invitation inv = invitationService.findById(id);
+		if (inv == null) {
+			System.out.println("Unable to delete. Invitation with id " + id + " not found");
+			return new ResponseEntity<Quiz>(HttpStatus.NOT_FOUND);
+		}
+
+		invitationService.deleteInvitation(id);
+		return new ResponseEntity<Quiz>(HttpStatus.NO_CONTENT);
+	}
 
 }

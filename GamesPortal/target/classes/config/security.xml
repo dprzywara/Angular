@@ -10,6 +10,7 @@
 <!-- 	<http pattern="/main/client/registration**" security="none"/>     -->
     <http pattern="/rest/**" security="none"/>
     <http pattern="/resources/**" security="none"/>
+<!--     <http pattern="/**" security="none"/> -->
 	<!-- enable use-expressions -->
 	<!-- 		<intercept-url pattern="/**" access="isAuthenticated()" /> -->
 <!-- 		<intercept-url pattern="/**" access="permitAll" /> -->

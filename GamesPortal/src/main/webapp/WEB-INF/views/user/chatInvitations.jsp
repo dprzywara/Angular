@@ -52,7 +52,7 @@
 
 
 				<div class="span12">
-					<h2>List Of Invitations</h2>
+					<h2>List Of Chat Invitations</h2>
 				</div>
 			
 				</br>
@@ -86,24 +86,15 @@
 									href="${contextPath}/user/chatInvitation/accept/${inv.id}"
 									class="btn btn-primary" id="acceptBtn" role="button">Akceptuj</a>&nbsp;&nbsp;<a
 									href="${contextPath}/user/invitation/reject/${inv.id}"
-									class="btn btn-primary" role="button">Odrzuc</a>&nbsp;&nbsp;
+									class="btn btn-danger" role="button">Odrzuc</a>&nbsp;&nbsp;
 									</td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
 				
-				<input type="button" id="cceptBtn" value="accept" class="btn btn-primary btn-sm"> 
-<!-- 				<input type="button" id="startBtn" value="Start" class="btn btn-primary btn-sm">  -->
-<!-- 				<p id="demo" onclick="myFunction()">Click me to change my text color.</p> -->
 
-<div id="login">${userLogin}</div>
 
- <div id="content"></div>
-        <div>
-            <span id="status">Connecting...</span>
-            <input type="text" id="input" disabled="disabled" />
-        </div>
 			</div>
 			
 <!-- </div> -->
@@ -118,9 +109,9 @@
 	<script
 		src="http://cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 	<script>
-		$(document).ready(function() {
-			$('#example').dataTable();
-		});
+// 		$(document).ready(function() {
+// 			$('#example').dataTable();
+// 		});
 		
 		
 

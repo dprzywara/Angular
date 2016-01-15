@@ -248,6 +248,19 @@ $(function(){
 		}
 	});
 	socket.on('end', function(data){
+		var url = "http://localhost:8085/GamesPortal/rest/invitation/";
+		
+
+		var client = new XMLHttpRequest();
+
+		client.open("DELETE", url + id, false);
+
+		client.setRequestHeader("Content-Type", "text/plain");
+
+		client.send();
+		if (client.status == 200) {
+			alert("dobry status");
+		}
 		window.location.assign("http://"+window.location.host+"/GamesPortal/user/home");
 		
 	});

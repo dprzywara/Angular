@@ -32,6 +32,7 @@ $(function(){
 	var chatNickname = $(".nickname-chat"),
 		leftNickname = $(".nickname-left"),
 		loginForm = $(".loginForm"),
+		acceptForm = $(".acceptForm"),
 		yourName = $("#yourName"),
 		yourEmail = $("#yourEmail"),
 		hisName = $("#hisName"),

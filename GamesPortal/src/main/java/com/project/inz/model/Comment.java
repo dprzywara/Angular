@@ -36,7 +36,7 @@ public class Comment implements Serializable{
 	@Column(name = "id")
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name="userId")
 	private User user;
 	

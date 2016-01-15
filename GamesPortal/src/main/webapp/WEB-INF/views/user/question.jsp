@@ -74,10 +74,10 @@
 
 						</div>
 						
-						<div class="infoRight">
-				<h2><span class="nickname-chat"></span> has just answered</h2>
-				<br/>
-				</div>
+<!-- 						<div class="infoRight"> -->
+<!-- 				<h2><span class="nickname-chat"></span> has just answered</h2> -->
+<!-- 				<br/> -->
+<!-- 				</div> -->
 						
 <!-- 						<div class="left"> -->
 

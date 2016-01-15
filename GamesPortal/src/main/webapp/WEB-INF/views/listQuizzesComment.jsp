@@ -77,11 +77,8 @@
 								<td align="center">${quizzes.level}</td>
 								<td align="center">${quizzes.popularity}</td>
 								<td align="center"><a
-									href="${contextPath}/user/quiz/play/${quizzes.id}"
-									class="btn btn-primary" role="button"><spring:message code="btn.play" /></a>
-<!-- 									&nbsp;&nbsp;<a -->
-<%-- 									href="/user/quiz/comment/${quizzes.id}" --%>
-<%-- 									class="btn btn-primary" role="button"><spring:message code="btn.comment" /></a>&nbsp;&nbsp; --%>
+									href="${contextPath}/user/quiz/comment/${quizzes.id}"
+									class="btn btn-primary" role="button"><spring:message code="btn.comment" /></a>&nbsp;&nbsp;
 <!-- 									<a -->
 <%-- 									href="/quizzme/quizzes/recommend/${quizzes.id}" --%>
 <!-- 									class="btn btn-info" role="button">Recommend</a> -->

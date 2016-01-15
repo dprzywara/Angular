@@ -37,10 +37,10 @@
 			
 
 										<label>Number of questions: ${quiz.questions.size()}</label>
-										<h5>Total credit: ${quiz.questions.size()*10}</h5>
+<%-- 										<h5>Total credit: ${quiz.questions.size()*10}</h5> --%>
 										
 										<form:form action="${contextPath}/user/quiz/play"
-											method="POST">
+											method="POST" class="acceptForm">
 											<input type="hidden" name="count" value="0">
 											<input type="hidden" name="quizId" value="${quiz.id }">
 											<input type="hidden" name="room" value="${room}">
@@ -165,16 +165,7 @@
 
 <!-- section -->
 
-	<footer>
 
-		<form id="chatform">
-
-			<textarea id="message" placeholder="Write something.."></textarea>
-			<input type="submit" id="submit" value="SEND"/>
-
-		</form>
-
-	</footer>
 		
 		
 <!-- 		==================================== -->

@@ -1,6 +1,8 @@
 package com.project.inz.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.project.inz.dao.UserDao;
 import com.project.inz.model.ScoreCard;
 import com.project.inz.model.User;
+import com.project.inz.model.UserRole;
 import com.project.inz.service.QuizService;
 import com.project.inz.service.RoleService;
 import com.project.inz.service.ScoreCardService;
@@ -170,6 +173,8 @@ public class HomeController {
 		public String addUser(Map<String, Object> map) {
 			User nowy = new User();
 			nowy.setEnabled(true);
+			UserRole role = roleService.getRole(2);
+			nowy.setRoles(new HashSet<UserRole>(Arrays.asList(role)));
 			map.put("user", nowy);
 			map.put("roleList", roleService.listRoles());
 			map.put("edit",false);

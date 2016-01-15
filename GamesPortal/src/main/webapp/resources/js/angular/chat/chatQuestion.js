@@ -258,7 +258,7 @@ showMessage("start");
 		odpowiedzial=true;
 
 			//odblokowuje ekran czekania i daje submit
-		//alert("przeciwnik odpowiedzial");
+		if(zatwierdzilem)alert("przeciwnik odpowiedzial");
 		info.fadeIn(1200);
 		if(zatwierdzilem)waiting.fadeOut();
 		if(zatwierdzilem)question.fadeIn(1200);

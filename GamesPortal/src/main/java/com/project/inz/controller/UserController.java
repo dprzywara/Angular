@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.project.inz.model.Category;
+import com.project.inz.model.Comment;
 import com.project.inz.model.Invitation;
 import com.project.inz.model.MyForm;
 import com.project.inz.model.Question;
@@ -49,6 +50,7 @@ import com.project.inz.model.ScoreCard;
 import com.project.inz.model.User;
 import com.project.inz.model.UserRole;
 import com.project.inz.service.CategoryService;
+import com.project.inz.service.CommentService;
 import com.project.inz.service.InvitationService;
 import com.project.inz.service.QuestionService;
 import com.project.inz.service.QuizService;
@@ -68,6 +70,8 @@ public class UserController {
 	
 	@Autowired
 	CategoryService categoryService;
+	@Autowired
+	CommentService commentService;
 	
 	@Autowired
 	UserService userService;
@@ -95,35 +99,76 @@ public class UserController {
 	/**
 	 * This method will provide the medium to update an existing user.
 	 */
-	@RequestMapping(value = { "/edit-user-{id}" }, method = RequestMethod.GET)
-	public String editUser(@PathVariable Integer id, ModelMap model) {
+	@RequestMapping(value = { "/updateUser" }, method = RequestMethod.GET)
+	public String editUser( ModelMap model) {
 		
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		User user = userService.findUserByLogin(username);
 		
-		
-		User user = userService.findById(id);
 		model.addAttribute("user", user);
+		model.addAttribute("username", username);
 		model.addAttribute("roleList", roleService.listRoles());
 		model.addAttribute("edit", true);
-		return "/user/userForm";
+		return "/user/userFormEdit";
+	}
+	
+	@RequestMapping(value = { "/changePassword" }, method = RequestMethod.GET)
+	public String editUserpsss( ModelMap model) {
+		
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		User user = userService.findUserByLogin(username);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("username", username);
+		model.addAttribute("roleList", roleService.listRoles());
+		model.addAttribute("edit", true);
+		return "/user/userFormPassword";
 	}
 	
 	/**
 	 * This method will be called on form submission, handling POST request for
 	 * updating user in database. It also validates the user input
 	 */
-	@RequestMapping(value = { "/edit-user-{userId}" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/updateUser" }, method = RequestMethod.POST)
 	public String updateUser(@Valid User user, BindingResult result,
-			ModelMap model, @PathVariable String userId) {
+			ModelMap model) {
 
 		if (result.hasErrors()) {
-			return "/user/userForm";
+			return "/user/userFormEdit";
 		}
+User oldUser = userService.findById(user.getId());
+oldUser.setEmail(user.getEmail());
+oldUser.setFirstName(user.getFirstName());
+oldUser.setLastName(user.getLastName());
 
-		userService.updateUser(user);
+		userService.updateUser(oldUser);
 
 		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
 		return "redirect:/user/home";
 	}
+	
+	@RequestMapping(value = { "/changePassword" }, method = RequestMethod.POST)
+	public String updateUserpassword(@Valid User user, BindingResult result,
+			ModelMap model) {
+
+		if (result.hasErrors()) {
+			return "/user/userFormPassword";
+		}
+User oldUser = userService.findById(user.getId());
+oldUser.setEmail(user.getEmail());
+oldUser.setFirstName(user.getFirstName());
+oldUser.setLastName(user.getLastName());
+
+		userService.updateUser(oldUser);
+
+		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
+		return "redirect:/user/home";
+	}
+	
 	
 	
 	@RequestMapping(value="/test", method = RequestMethod.GET)
@@ -201,6 +246,27 @@ public class UserController {
 		model.addAttribute("username", username);
 		model.addAttribute("quizList", quizList4User);
 		return "listQuizzes";
+	}
+	@RequestMapping(value = "/chooseQuizComment", method = RequestMethod.GET)
+	public String searchQuizComment(Locale locale, Model model,HttpServletRequest request) {
+		
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String username = auth.getName();
+		User user = userService.findUserByLogin(username);
+		if (user == null) {
+			return "redirect:/";
+		}
+		List<Quiz> quizList = quizService.getAllQuizzes();
+		List<Quiz> quizList4User = new ArrayList<Quiz>();
+		for (Quiz quiz : quizList) {
+			if(!(scoreService.checkIfUserHasPlayedQuiz(user, quiz.getId()))){
+				quizList4User.add(quiz);
+			}
+		}
+		model.addAttribute("username", username);
+		model.addAttribute("quizList", quizList4User);
+		return "listQuizzesComment";
 	}
 	
 	
@@ -830,6 +896,7 @@ public class UserController {
 			User usr = userService.findUserByLogin(login);
 			Set<Invitation> listaZlecen = usr.getUserInvited();
 			model.addAttribute("invitations", listaZlecen);
+			model.addAttribute("username", login);
 			
 			return "/user/invitations";
 		}
@@ -855,6 +922,7 @@ public class UserController {
 						}
 					}
 			model.addAttribute("invitations", listaZlecen);
+			model.addAttribute("username", login);
 			
 			return "/user/chatInvitations";
 		}
@@ -883,6 +951,50 @@ public class UserController {
 			 if(invitationService.findById(room)!=null) invitationService.deleteInvitation(room);
 			 return "redirect:/user/messages/"+room;
 		 }
+		 
+		 
+		 
+		 
+			@RequestMapping(value = "/quiz/comment/{quizId}", method = RequestMethod.GET)
+			public String writeComments(@PathVariable(value = "quizId") Integer quizID,
+					Model model, HttpServletRequest request) {
+				Authentication auth = SecurityContextHolder.getContext()
+						.getAuthentication();
+				String login = new String();
+				if (auth == null) {
+					return "redirect:/";
+				}
+				login = auth.getName();
+				Quiz quizToCommentOn = quizService.getQuiz(quizID);
+				Comment newComment = new Comment();
+				model.addAttribute("quiz", quizToCommentOn);
+				model.addAttribute("comment", newComment);
+				model.addAttribute("username", login);
+				return "/user/commentOnQuiz";
+			}
+
+			@RequestMapping(value = "/quiz/comment", method = RequestMethod.POST)
+			public String writeComments(@ModelAttribute("comment") Comment newComment,
+					@RequestParam(value = "quizId", required = true) Integer quizId,
+					HttpServletRequest request) {
+
+//				User currentUser = (User) request.getSession().getAttribute(
+//						"loggedInUser");
+//				if (currentUser == null) {
+//					
+//					return "redirect:/";
+//				}
+				Authentication auth = SecurityContextHolder.getContext()
+						.getAuthentication();
+				String login = auth.getName();
+				if (newComment == null) {
+					return "defaultError";
+				}
+				User usr = userService.findUserByLogin(login);
+//				int userId = currentUser.getId();
+				commentService.createComments(usr.getId(), quizId, newComment.getComment());
+				return "redirect:/user/chooseQuizComment";
+			}
 		 
 		
 }

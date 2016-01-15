@@ -32,7 +32,7 @@
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 					<div class="jumbotron">
 						<h2 class="sub-header">
-							<spring:message code="sidebar.users" />
+							Select User To Chat
 						</h2>
 
 
@@ -60,7 +60,7 @@
 <br>
 <br>
 <%-- <span id="login"><sec:authentication property="name" /></span>  --%>
-<div  id="login">${username}</div>
+<div  id="login" style="display:none">${username}</div>
 <br>
 
                         
